@@ -1,0 +1,516 @@
+\ProvidesPackage{Peischl_expl3tut-config}
+
+\csname str_set:Nn\endcsname \minted@latexexpllexer{expltex.py:ExplTexLexer -x}
+
+\newlength{\functionframewidth}
+
+%DTK workaround
+\disable@package@load{float}{}
+%\RequirePackage{float}
+\newcommand*{\floatname}[2]{}
+\NewDocumentCommand{\newfloat}{mmmo}{}
+
+\RequirePackage{minted}
+\setminted{breaksymbol=,tabsize=4,autogobble}
+
+\let\newfloat\relax
+\let\floatname\relax
+% end DTK workaround
+\reenable@package@load{float}
+
+\RequirePackage{tcolorbox}
+\tcbuselibrary{xparse, skins, minted, hooks,breakable}
+
+
+\RequirePackage[output-decimal-marker={.},exponent-product=\cdot]{siunitx}
+\DeclareSIUnit\inch{''}
+\DeclareSIUnit\pt{pt}
+\DeclareSIUnit{\Em}{em}
+\DeclareSIUnit{\Ex}{ex}
+
+
+\RequirePackage{tikz}
+\usetikzlibrary{babel,calc,cd}
+
+\RequirePackage{booktabs}
+\RequirePackage{multicol}
+
+\newcommand*{\codefamily}{\ttfamily}
+\DeclareTextFontCommand{\codefont}{\codefamily}
+\newenvironment{codeenv}{\codefamily}{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\colorlet{CommentColBack}{black!5}
+\colorlet{ListingColBack}{black!10}
+\colorlet{TextColBack}{black!5}
+\colorlet{TitleColBack}{white}
+
+\tikzset{
+	codeboxrule/.style={line width=\fboxrule, draw=black}	
+}
+
+
+\tcbset{
+	novskips/.style={before={\ifvmode\smallskip\else\strut\fi\par\smallbreak\parindent=0pt},
+		after={\par}},
+	skriptcodeboxspacing/.style={
+		boxrule=\fboxrule,
+		left skip=0pt,
+		middle=\fboxsep,
+		boxsep=\fboxsep,
+		sharp corners,
+		left=\fboxsep,
+		right=\fboxsep,
+		top=\fboxsep,
+		bottom=\fboxsep,
+		novskips
+	},
+	skriptcodebox/.style={
+		skin=bicolor,
+		boxrule=\fboxrule,
+		colback=ListingColBack,
+		colbacktitle=TitleColBack,
+		colframe=black,
+		coltitle=black,
+		colbacklower=TextColBack,
+		left skip=0pt,
+		boxsep=2\fboxsep,
+		sharp corners,
+		left=0pt,
+		right=0pt,
+		top=0pt,
+		bottom=0pt,
+		middle=0pt,
+		sidebyside gap=\dimexpr\fboxrule+4\fboxsep\relax,
+		segmentation style={line width=\fboxrule, solid},
+		segmentation code app={\iftcb@sidebyside%
+			\draw[draw=black,line width=\fboxrule](segmentation.north) -- (segmentation.south);
+			\else
+			\path[draw=black,line width=\fboxrule](segmentation.west) rectangle (segmentation.east);
+			\fi},
+		novskips
+	}
+}
+
+\let\@orig@doenpe\@doendpe
+\def\extended@doendpe{%
+	\@endpetrue
+	\def\par{\@restorepar\global\let\@doendpe\@orig@doenpe
+		\clubpenalty\@clubpenalty
+		\everypar
+		{{\setbox\z@\lastbox}%
+			\everypar{}}\par\@endpefalse}%
+	\everypar{{\setbox\z@\lastbox}%
+		\everypar{}\@restorepar\@endpefalse
+	}
+}
+
+\newcommand{\NoindentAfterTcolorbox}{\par\smallskip\global\let\@doendpe\extended@doendpe\par\@endparenv}
+
+\NewDocumentEnvironment{example}{o}{%
+	\begin{tcolorbox}[skin=examplebox, IfNoValueF={#1}{title=#1}]%
+}{
+	\end{tcolorbox}%
+}
+
+\tcbsubskin{examplebox}{bicolor}{
+	skin first=examplebox,
+	skin middle=examplebox
+	skin last=examplebox,
+	sidebyside gap=\dimexpr\fboxrule+4\fboxsep\relax,
+	boxrule=\fboxrule,
+	colback=ListingColBack,
+	colbacktitle=TitleColBack,
+	colframe=black,
+	coltitle=black,
+	colbacklower=TextColBack,
+	left skip=0pt,
+	boxsep=2\fboxsep,
+	sharp corners,
+	left=0pt,
+	right=0pt,
+	top=0pt,
+	bottom=0pt,
+	middle=0pt,
+	segmentation code app={\iftcb@sidebyside%
+		\draw[draw=black,line width=\fboxrule](segmentation.north) -- (segmentation.south);
+		\else
+		\path[draw=black,line width=\fboxrule](segmentation.west) rectangle (segmentation.east);
+		\fi},
+	minted options={autogobble,tabsize=4},
+	minted language=latex,
+}
+
+\NewTCBListing{examplebox}{m}{%
+	skin=examplebox,
+	fonttitle=\bfseries,
+	listing and text,
+	attach boxed title to top right=
+	{yshift=-\tcboxedtitleheight/3,xshift=-\fboxrule-\fboxsep,yshifttext=-\tcboxedtitleheight/3},%top=\tcboxedtitleheight/3},
+	segmentation code app={\iftcb@sidebyside%
+		\draw[draw=black,line width=\fboxrule](segmentation.north) -- (segmentation.south);
+		\else
+		\path[draw=black,line width=\fboxrule](segmentation.west) rectangle (segmentation.east);
+		\fi},
+	after=\NoindentAfterTcolorbox,
+	minted language=latex,
+	minted options={autogobble,tabsize=4},
+	#1,
+}
+
+\NewTCBInputListing{\Examplebox}{mm}{%
+	listing file={#2},
+	skin=examplebox,
+	fonttitle=\bfseries,
+	listing and text,
+	attach boxed title to top right=
+	{yshift=-\tcboxedtitleheight/3,xshift=-\fboxrule-\fboxsep,yshifttext=-\tcboxedtitleheight/3},%top=\tcboxedtitleheight/3},
+segmentation code app={\iftcb@sidebyside%
+	\draw[draw=black,line width=\fboxrule](segmentation.north) -- (segmentation.south);
+	\else
+	\path[draw=black,line width=\fboxrule](segmentation.west) rectangle (segmentation.east);
+	\fi},
+after=\NoindentAfterTcolorbox,
+minted language=latex,
+minted options={autogobble,tabsize=4},
+#1,
+}
+
+\NewTCBListing{expl3box}{m}{%
+	skin=examplebox,
+	fonttitle=\bfseries,
+	listing and text,
+	attach boxed title to top right=
+	{yshift=-\tcboxedtitleheight/3,xshift=-\fboxrule-\fboxsep,yshifttext=-\tcboxedtitleheight/3},%top=\tcboxedtitleheight/3},
+	segmentation code app={\iftcb@sidebyside%
+	\draw[draw=black,line width=\fboxrule](segmentation.north) -- (segmentation.south);
+	\else
+	\path[draw=black,line width=\fboxrule](segmentation.west) rectangle (segmentation.east);
+	\fi},
+	after=\NoindentAfterTcolorbox,
+ listing engine=minted,
+	minted language=\minted@latexexpllexer,
+	minted options={autogobble,tabsize=4},
+	#1,
+}
+
+\NewTCBInputListing{\ExplBox}{mm}{%
+	listing file={#2},
+	skin=examplebox,
+	fonttitle=\bfseries,
+	listing and text,
+	attach boxed title to top right=
+	{yshift=-\tcboxedtitleheight/3,xshift=-\fboxrule-\fboxsep,yshifttext=-\tcboxedtitleheight/3},%top=\tcboxedtitleheight/3},
+segmentation code app={\iftcb@sidebyside%
+	\draw[draw=black,line width=\fboxrule](segmentation.north) -- (segmentation.south);
+	\else
+	\path[draw=black,line width=\fboxrule](segmentation.west) rectangle (segmentation.east);
+	\fi},
+after=\NoindentAfterTcolorbox,
+listing engine=minted,
+minted language=\minted@latexexpllexer,
+minted options={autogobble,tabsize=4},
+#1,
+}
+
+\colorlet{CommentColBack}{black!5}
+\colorlet{ListingColBack}{black!10}
+\colorlet{TextColBack}{black!5}
+\colorlet{TitleColBack}{white}
+
+\tikzset{
+	codeboxrule/.style={line width=\fboxrule, draw=black}	
+}
+
+\newminted{latex}{autogobble,tabsize=4}
+\newmintinline[texinline]{text}{escapeinside=||}
+
+\def\minted@latexmakeatletterlexer{makeatletter.py:TexLexer -x}
+
+
+\newmintinline[makeatletterinline]{\minted@latexmakeatletterlexer}{}
+\newminted[texmakeatletter]{\minted@latexmakeatletterlexer}{}
+%config/pygments/makeatletter.py:TexLexer -x}
+\def\mintedexpl{\minted@latexexpllexer}
+\newmintinline[explinline]{\minted@latexexpllexer}{}
+\newminted[explcode]{\minted@latexexpllexer}{}
+
+\newmintinline[FunctionCode]{latex}{escapeinside=||}
+
+\newmintinline[ExplFunctionCode]{
+	\minted@latexexpllexer
+}{escapeinside=||}
+\newmintinline[AtFunctionCode]{
+	\minted@latexmakeatletterlexer
+}{escapeinside=||}
+\newmintinline[functioninline]{latex}{escapeinside=||}
+\ExplSyntaxOn
+\tcbset{
+	MintedFunctionframe/.style={
+		skin=enhanced,
+		%		breakable,
+		colback=white,
+		boxsep=0pt,
+		right=0pt,
+		left=.5\fboxsep,
+		bottom=.5\fboxsep,
+		top=.5\fboxsep,
+		boxrule=\fboxrule,
+		rightrule=0pt,
+		sharp~corners,
+		frame~code={
+			\begin{scope}
+				\draw[codeboxrule](frame.south~west)rectangle(\dimexpr\functionframewidth+\fboxsep+2\fboxrule,0|-frame.north);
+			\end{scope}
+		},
+		interior~code={
+			\fill[white]([xshift=-.5\fboxrule,yshift=-.5\fboxrule]interior.south~west)rectangle([yshift=.5\fboxrule]\dimexpr\functionframewidth+\fboxsep+2\fboxrule,0|-interior.north);
+		},
+		overlay={
+			\draw[codeboxrule](\dimexpr\functionframewidth+\fboxsep+2\fboxrule,0|-frame.north~west)--(\dimexpr\functionframewidth+\fboxsep+2\fboxrule,0|-frame.south~west);
+		},
+		before={\ifvmode\smallskip\else\strut\par\fi\parindent=0pt},
+		after={\par\smallskip},
+	},
+	MintedOptionframe/.style={
+		skin=enhanced,
+		%		breakable,
+		colback=white,
+		boxsep=0pt,
+		right=0pt,
+		left=.5\fboxsep,
+		bottom=.5\fboxsep,
+		top=.5\fboxsep,
+		boxrule=0pt,
+		rightrule=0pt,
+		sharp~corners,
+		frame~code={},
+		interior~code={
+			\fill[black!20](interior.south~west)rectangle(\dimexpr\functionframewidth+\fboxsep,0|-interior.north);
+		},
+		after=,
+	}
+}
+
+\regex_const:Nn \c_FunctionComma_regex {<KOMMA>}
+\regex_const:Nn \c_FunctionArg_regex {\|(.+)}
+\box_new:N \l_this_tmpa_box
+\seq_new:N \l_this_function_seq
+\seq_new:N \l_this_functionDescription_seq
+%\str_new:N \l_this_function_sep_tl
+%\tl_new:N \l_this_function_sep_tl
+
+\keys_define:nn {Function} {
+	index .bool_set:N = \l_this_FunctionIndex_bool,
+	index .initial:n = false,
+	description .tl_set:N = \l_this_FunctionDescription_tl,
+	description .initial:n =,
+	args .tl_set:N =\l__this_FunctionArgs_tl,
+	args .initial:n =,
+	sep .tl_set:N = \l_this_function_sep_tl,% {#1},
+	sep .initial:n = {,},
+	content .tl_set:N = \l_this_EnvContent_tl,
+	content .initial:n = ...,
+	envindent .bool_set:N = \l_this_envindent_bool,
+	envindent .initial:n =true,
+	codeswitch .tl_set:N = \l_this_codeswitch_tl,
+	codeswitch .initial:n =|,
+	opts .tl_set:N = \l_this_opts_tl,
+	opts .initial:n = 
+}
+
+
+\cs_new:Nn \this_Function_block:nnnn {
+	\begin{tcolorbox}[MintedFunctionframe]
+		\IfNoValueF{#2}{\keys_set:nn {Function} {#2}}
+		%	\leavevmode
+		\dim_gset:Nn \functionframewidth {\c_zero_dim}
+		\exp_args:NNV \seq_set_split:Nnn \l_this_function_seq \l_this_function_sep_tl {#4}
+		\seq_set_split:NnV \l_this_functionDescription_seq {\\} {\l_this_FunctionDescription_tl}
+		
+		\int_step_inline:nn {\seq_count:N \l_this_function_seq}
+		{
+			\tl_set:Nx \l_tmpa_tl {\seq_item:Nn \l_this_function_seq {##1}}
+			\regex_replace_all:NnN \c_FunctionComma_regex { , } \l_tmpa_tl
+			\exp_args:NNV \seq_set_split:NnV \l_tmpa_seq \l_this_codeswitch_tl \l_tmpa_tl	
+			\box_if_exist:cF {l_this_tmpa##1_box}  {\box_new:c {l_this_tmpa##1_box}}
+			\hbox_set:cn {l_this_tmpa##1_box} {
+				\int_step_inline:nn {\seq_count:N \l_tmpa_seq}
+				{
+					\bool_if:NT \l_this_FunctionIndex_bool {
+						\int_compare:nT {####1 = 1} {
+							\exp_args:Nnx \use:n {\index[cmd]}{\exp_not:N \string\seq_item:Nn \l_tmpa_seq {####1}}
+						}
+					}
+					\int_if_odd:nTF {####1}
+					{\strut\exp_args:Nx \FunctionCode {\seq_item:Nn \l_tmpa_seq {####1}}}
+					{\exp_args:Nnx \tl_rescan:nn {\ExplSyntaxOff} {\seq_item:Nn \l_tmpa_seq {####1}}}
+				}
+				\l__this_FunctionArgs_tl
+			}
+			%TODO 
+			\dim_gset:Nn \functionframewidth {\dim_max:nn {\box_wd:c {l_this_tmpa##1_box}} {\functionframewidth}}
+			%		\par
+		}
+		\tl_if_empty:NTF \l_this_FunctionDescription_tl {
+			\leavevmode\vbox:n {
+				\int_step_inline:nn {\seq_count:N \l_this_function_seq} {
+					\box_use:c {l_this_tmpa##1_box}\par
+				}
+			}
+		} {
+			\bool_gset_false:N \g_tmpa_bool
+			\begin{tabular}[t]{@{}p{\functionframewidth}p{\textwidth-2\tabcolsep-\functionframewidth}@{}}
+				\int_step_inline:nn {\seq_count:N \l_this_function_seq} {
+					\bool_if:NTF \g_tmpa_bool {\tabularnewline} {\bool_gset_true:N \g_tmpa_bool}
+					\leavevmode\box_use:c {l_this_tmpa##1_box}
+					&
+					\seq_item:Nn \l_this_functionDescription_seq {##1}
+				}
+			\end{tabular}
+		}\IfNoValueF {#3} {\hfill\textnormal{(#3)}}
+	\end{tcolorbox}
+	\everypar{\setbox\z@\lastbox\everypar{}}
+}
+
+\cs_generate_variant:Nn  \this_Function_block:nnnn {nnnx}
+
+
+
+\NewDocumentCommand{\Function}{sd<>o+v}{\par\smallskip
+	\begin{tcolorbox}[MintedFunctionframe]
+		\dim_gset:Nn \functionframewidth {\c_zero_dim}
+		\exp_args:NNx \seq_set_split:Nnn \l_this_function_seq {\tl_to_str:N \l_this_function_sep_tl} {#4}
+		\seq_set_split:NnV \l_this_functionDescription_seq {\\} {\l_this_FunctionDescription_tl}
+		
+		\int_step_inline:nn {\seq_count:N \l_this_function_seq}
+		{
+			\tl_set:Nx \l_tmpa_tl {\seq_item:Nn \l_this_function_seq {##1}}
+			\regex_replace_all:NnN \c_FunctionComma_regex { , } \l_tmpa_tl
+			\seq_set_split:NnV \l_tmpa_seq {|} \l_tmpa_tl	
+			\box_if_exist:cF {l_this_tmpa##1_box}  {\box_new:c {l_this_tmpa##1_box}}
+			\hbox_set:cn {l_this_tmpa##1_box} {
+				\int_step_inline:nn {\seq_count:N \l_tmpa_seq}
+				{
+					\bool_if:NT \l_this_FunctionIndex_bool {
+						\int_compare:nT {####1 = 1} {
+							\exp_args:Nnx \use:n {\index[cmd]}{\exp_not:N \string\seq_item:Nn \l_tmpa_seq {####1}}
+						}
+					}
+					\int_if_odd:nTF {####1}
+					{\exp_args:Nx \FunctionCode {\seq_item:Nn \l_tmpa_seq {####1}}}
+					{\exp_args:Nnx \tl_rescan:nn {\ExplSyntaxOff} {\seq_item:Nn \l_tmpa_seq {####1}}}
+				}
+				\l__this_FunctionArgs_tl
+			}
+			\dim_gset:Nn \functionframewidth {\dim_max:nn {\box_wd:c {l_this_tmpa##1_box}} {\functionframewidth}}
+		}
+		\tl_if_empty:NTF \l_this_FunctionDescription_tl {
+			\leavevmode\vbox:n {
+				\int_step_inline:nn {\seq_count:N \l_this_function_seq} {
+					\box_use:c {l_this_tmpa##1_box}\par
+				}
+			}
+		} {
+			\bool_gset_false:N \g_tmpa_bool
+			\begin{tabular}[t]{@{}p{\functionframewidth}p{\textwidth-2\tabcolsep-\functionframewidth}@{}}
+				\int_step_inline:nn {\seq_count:N \l_this_function_seq} {
+					\bool_if:NTF \g_tmpa_bool {\tabularnewline} {\bool_gset_true:N \g_tmpa_bool}
+					\leavevmode\box_use:c {l_this_tmpa##1_box}
+					&
+					\seq_item:Nn \l_this_functionDescription_seq {##1}
+				}
+			\end{tabular}
+		}
+		%\IfNoValueF {#3} {\hfill\textnormal{(#3)}}
+	\end{tcolorbox}
+	\everypar{\setbox\z@\lastbox\everypar{}}
+}
+
+
+
+%%%%%%%%%%%%%%
+% explFunction
+%%%%%%%%%%%%%%
+\NewDocumentCommand{\explFunction}{sd<>o+v}{\par\smallskip
+	\begin{tcolorbox}[MintedFunctionframe]
+		\dim_gset:Nn \functionframewidth {\c_zero_dim}
+		\exp_args:NNx \seq_set_split:Nnn \l_this_function_seq {\tl_to_str:N \l_this_function_sep_tl} {#4}
+		\seq_set_split:NnV \l_this_functionDescription_seq {\\} {\l_this_FunctionDescription_tl}
+		
+		\int_step_inline:nn {\seq_count:N \l_this_function_seq}
+		{
+			\tl_set:Nx \l_tmpa_tl {\seq_item:Nn \l_this_function_seq {##1}}
+			\regex_replace_all:NnN \c_FunctionComma_regex { , } \l_tmpa_tl
+			\seq_set_split:NnV \l_tmpa_seq {|} \l_tmpa_tl	
+			\box_if_exist:cF {l_this_tmpa##1_box}  {\box_new:c {l_this_tmpa##1_box}}
+			\hbox_set:cn {l_this_tmpa##1_box} {
+				\int_step_inline:nn {\seq_count:N \l_tmpa_seq}
+				{
+					\bool_if:NT \l_this_FunctionIndex_bool {
+						\int_compare:nT {####1 = 1} {
+							\exp_args:Nnx \use:n {\index[cmd]}{\exp_not:N \string\seq_item:Nn \l_tmpa_seq {####1}}
+						}
+					}
+					\int_if_odd:nTF {####1}
+					{\exp_args:Nx \ExplFunctionCode {\seq_item:Nn \l_tmpa_seq {####1}}}
+					{\exp_args:Nnx \tl_rescan:nn {} {\seq_item:Nn \l_tmpa_seq {####1}}}
+				}
+				\l__this_FunctionArgs_tl
+			}
+			\dim_gset:Nn \functionframewidth {\dim_max:nn {\box_wd:c {l_this_tmpa##1_box}} {\functionframewidth}}
+		}
+		\tl_if_empty:NTF \l_this_FunctionDescription_tl {
+			\leavevmode\vbox:n {
+				\int_step_inline:nn {\seq_count:N \l_this_function_seq} {
+					\box_use:c {l_this_tmpa##1_box}\par
+				}
+			}
+		} {
+			\bool_gset_false:N \g_tmpa_bool
+			\begin{tabular}[t]{@{}p{\functionframewidth}p{\textwidth-2\tabcolsep-\functionframewidth}@{}}
+				\int_step_inline:nn {\seq_count:N \l_this_function_seq} {
+					\bool_if:NTF \g_tmpa_bool {\tabularnewline} {\bool_gset_true:N \g_tmpa_bool}
+					\leavevmode\box_use:c {l_this_tmpa##1_box}
+					&
+					\seq_item:Nn \l_this_functionDescription_seq {##1}
+				}
+			\end{tabular}
+		}\IfNoValueF {#3} {\hfill\textnormal{(#3)}}
+	\end{tcolorbox}
+	\everypar{\setbox\z@\lastbox\everypar{}}
+}
+%%%%%%%%%%%%%%
+
+
+\definecolor{mintedcommand}{rgb}{0.00,0.44,0.13}
+
+\newcommand*{\mintedcommand}[1]{\codefont{\bfseries\textcolor[rgb]{0.00,0.44,0.13}{#1}}}
+\newcommand*{\mintedgroup}[1]{\codefont{\textcolor[rgb]{0.00,0.44,0.13}{#1}}}
+\newcommand*{\mintedbracket}[1]{\codefont{#1}}
+\NewDocumentCommand{\marg}{sm}{\mintedgroup{\{}\IfBooleanF{#1}{\repl}{#2}\mintedgroup{\}}}
+\NewDocumentCommand{\sarg}{}{\codefont{\bfseries\textcolor{mintedcommand!50}{*}}}
+\NewDocumentCommand{\Sarg}{}{\codefont{\bfseries\textcolor{mintedcommand}{*}}}
+\NewDocumentCommand{\oarg}{sm}{%
+	\textcolor[rgb]{0.49,0.56,0.16}{\codefamily[%
+		\IfBooleanF{#1}{\repl}{#2}%
+		]}%
+}
+\newcommand*{\mintedbegin}[1]{\codefont{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{\tbs{}begin}\{}#1\textcolor[rgb]{0.00,0.44,0.13}{\}}}}
+\newcommand*{\mintedend}[1]{\codefont{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{\tbs{}end}\{}#1\textcolor[rgb]{0.00,0.44,0.13}{\}}}}
+
+\newcommand{\repl}[1]{\textnormal{\textsl{#1}}}
+\newcommand*{\pck}[1]{#1}
+\newlength\tmplength
+
+
+\tl_new:N \l_this_texdoc_tl
+\tl_new:N \l_this_resources_tl
+\newcommand*{\resources}[1]{\tl_gset:Nn \l_this_resources_tl {Additional~resources:~#1}}
+\newcommand*{\texdoc}[1]{\tl_gset:Nn  \l_this_texdoc_tl {\TeX{}doc:~#1}}
+\ExplSyntaxOff
+
+%hack around the automatic quote of minted to still support custom lexers
+\def\minted@opt@quote#1{#1}
+
+\endinput

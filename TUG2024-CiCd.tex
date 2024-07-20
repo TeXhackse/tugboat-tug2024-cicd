@@ -1,0 +1,87 @@
+\iffalse
+{Oliver Kopp, Marcel~Kr\"uger, Marei~Peischl}
+{Tutorial: Creation of \LaTeX\ documents using a cloud-based pipeline}
+{This will be a tutorial on using git as well as GitHub\slash GitLab
+pipelines for \LaTeX\ document development. The duration is expected to
+be two hours or more, depending on the final schedule.
+
+Most \LaTeX{} users compile on the local machine or using online
+services like Overleaf. There also is a third option: build servers.
+That option is especially interesting when one versions the project
+using git. This tutorial will show you how to get from an installation
+of git to a \LaTeX\ document compiled by a build server. At first,
+concepts of git and GitHub\slash GitLab will be explained. This includes
+the concept of branches, pushes, automated checks on the build server,
+and collaborative work using pull\slash merge requests. After that,
+there will be time for practical exercises and questions.
+
+Participants are asked to create a GitHub or GitLab account before the
+start, but we will also show how to run a pipeline locally so this is
+not a strict requirement.}
+\fi
+
+\documentclass[final]{ltugboat}
+\def\ldots{\tubdots\allowbreak}
+
+\usepackage{Peischl_expl3tut-config}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage[hidelinks,pdfa]{hyperref}
+\usepackage[autostyle]{csquotes}
+
+
+%\usepackage{biblatex}
+
+\usepackage{tabularx}
+%%% Start of metadata %%%
+
+\title[TUG2024: LaTeX CI/CD]{Tutorial:\newline Creation of \LaTeX\ documents using a cloud-based pipeline}
+\date{2024-07-19}
+\author{Oliver Kopp \and Marcel~Krüger \and Marei~Peischl}
+
+% repeat info for each author; comment out items that don't apply.
+\author{Marei Peischl}
+\address{Gneisenaustr. 18\\20253 Hamburg\\Germany}
+\netaddress{marei (at) peitex dot de}
+\personalURL{https://peitex.de}
+%\ORCID{0}
+% To receive a physical copy of the TUGboat issue, please include the
+% mailing address we should use, as a comment if you prefer it not be printed.
+\author{Marcel Krüger}
+%\address{Gneisenaustr. 18\\20253 Hamburg\\Germany}
+%\netaddress{marei (at) peitex dot de}
+%\personalURL{https://peitex.de}
+\author{Oliver Kopp}
+%\address{Gneisenaustr. 18\\20253 Hamburg\\Germany}
+%\netaddress{marei (at) peitex dot de}
+%\personalURL{https://peitex.de}
+
+%%% End of metadata %%%
+%\addbibresource{dante-expl3tut.bib}       % xampl.bib comes with BibTeX}
+
+\newif\ifTUGboatPrint
+
+\TUGboatPrinttrue
+
+%black & white mode for printing
+\ifTUGboatPrint
+\usemintedstyle{bw}
+\AtBeginEnvironment{minted}{\let\textit\textsl\let\itshape\slshape}
+\AtBeginEnvironment{tcolorbox}{\let\textit\textsl\let\itshape\slshape}
+\tcbset{
+	MintedFunctionframe/.append style={
+		before upper={\let\textit\textsl\let\itshape\slshape}
+	}
+}
+%These are the background colors of the boxes
+\colorlet{CommentColBack}{black!2}
+\colorlet{ListingColBack}{black!8}
+\colorlet{TextColBack}{black!4}
+\colorlet{TitleColBack}{white}
+\fi
+
+\begin{document}
+
+\maketitle
+
+\end{document}
