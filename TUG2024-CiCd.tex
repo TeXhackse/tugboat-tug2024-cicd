@@ -265,7 +265,7 @@ It received a name, which is helpful to simplify debugging as GitHub will tell u
 So \action{checkout@v4} refers to a separate repository \cite{github-action-checkout}.
 This action takes care of the authentication and some interals, so we don't have to deal with details.
 
-Important is, that after this action the following steps start being executed within the root directory of our repository.
+The important part is that only after this action, the following steps start being executed within the root directory of our repository.
 
 The second step is kind of the same as in the first example, but this time we run \command{latexmk}\cite{latexmk} using \command{lualatex}.
 By default this will run on all \file{*.tex} files within the root directory.
