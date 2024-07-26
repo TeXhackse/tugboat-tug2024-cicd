@@ -229,9 +229,9 @@ As one can see it's possible to directly enter bash code in there.
 This example is only creating some output and should therefore run without any issues.
 \end{description}
 
-On GitHub the actions are automatically enabled.
-So it's enough to add a yaml configuration file within the repository and since we chose one of the runner variants which are also provided by Github, no additional setup is required.
-The pipelie should start running.
+On GitHub, actions are automatically enabled for new repositories.
+When combined with an available runner like we do, it's enough to add a yaml configuration file to the repository to see the effect.
+After pushing that configuration, the pipelie will start running on all subsequent pushes.
 
 The status can always be checked having a look at
 \url*{<repo url>/actions} e.g. for for first of our demo repositories, this can be found at
