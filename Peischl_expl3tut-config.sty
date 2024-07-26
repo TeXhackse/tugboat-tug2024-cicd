@@ -106,12 +106,12 @@
 }
 
 \newcommand{\NoindentAfterTcolorbox}{\par\smallskip\global\let\@doendpe\extended@doendpe\par\@endparenv}
-
-\NewDocumentEnvironment{example}{o}{%
-	\begin{tcolorbox}[skin=examplebox, IfNoValueF={#1}{title=#1}]%
-}{
-	\end{tcolorbox}%
-}
+%
+%\NewDocumentEnvironment{example}{o}{%
+%	\begin{tcolorbox}[skin=examplebox, IfNoValueF={#1}{title=#1}]%
+%}{
+%	\end{tcolorbox}%
+%}
 
 \tcbsubskin{examplebox}{bicolor}{
 	skin first=examplebox,

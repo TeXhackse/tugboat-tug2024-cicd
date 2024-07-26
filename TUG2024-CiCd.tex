@@ -22,6 +22,7 @@ not a strict requirement.}
 
 \documentclass[final]{ltugboat}
 \def\ldots{\tubdots\allowbreak}
+\PassOptionsToPackage{draft}{minted}
 
 \usepackage{Peischl_expl3tut-config}
 \usepackage{microtype}
@@ -30,7 +31,8 @@ not a strict requirement.}
 \usepackage[autostyle]{csquotes}
 
 
-%\usepackage{biblatex}
+\usepackage{biblatex}
+\addbibresource{tug2024-cicd.bib}
 
 \usepackage{tabularx}
 %%% Start of metadata %%%
@@ -47,13 +49,13 @@ not a strict requirement.}
 % To receive a physical copy of the TUGboat issue, please include the
 % mailing address we should use, as a comment if you prefer it not be printed.
 \author{Marcel Krüger}
-%\address{Gneisenaustr. 18\\20253 Hamburg\\Germany}
-%\netaddress{marei (at) peitex dot de}
-%\personalURL{https://peitex.de}
+\address{Gneisenaustr. 18\\20253 Hamburg\\Germany}
+\netaddress{marei (at) peitex dot de}
+\personalURL{https://peitex.de}
 \author{Oliver Kopp}
-%\address{Gneisenaustr. 18\\20253 Hamburg\\Germany}
-%\netaddress{marei (at) peitex dot de}
-%\personalURL{https://peitex.de}
+\address{Gneisenaustr. 18\\20253 Hamburg\\Germany}
+\netaddress{marei (at) peitex dot de}
+\personalURL{https://peitex.de}
 
 %%% End of metadata %%%
 %\addbibresource{dante-expl3tut.bib}       % xampl.bib comes with BibTeX}
@@ -86,7 +88,7 @@ not a strict requirement.}
 
 \newcommand*{\TeXLive}{\acro{\TeX\,Live}}
 
-\newcommand*{\file}[1]{\texttt{#1}}
+
 
 \usepackage{fontspec}
 
@@ -97,13 +99,28 @@ not a strict requirement.}
 
 \setmonofont{Latin Modern Mono}[RawFeature={fallback=emojifallback}]
 
+\newcommand*{\action}[1]{\texttt{#1}}
+\newcommand*{\command}[1]{\texttt{#1}}
+\newcommand*{\directive}[1]{\textbf{#1}}
+\newcommand*{\file}[1]{\texttt{#1}}
+\newcommand*{\directory}[1]{\texttt{#1}}
+\newcommand*{\containerimage}[1]{\enquote{#1}}
+
+\graphicspath{{}{img/}}
+
 %TODO acro
 % cici = continous ingegration and continous delivery
 \begin{document}
 
+\newlength{\mintednumbersep}
+\sbox0{\tiny00}%
+\setlength\mintednumbersep{1em}%
+\addtolength\mintednumbersep{-\wd0}%
+\setminted{xleftmargin=1em,numbersep=\mintednumbersep,numbers=left}
+
 \maketitle
 
-Everything moved or is moving towards the cloud.
+Everything went into or is moving towards the cloud.
 \LaTeX{} is already there for about 10 years and today it's quite common to use a web editor for collaboration and local compilation became the \enquote{nerdy} way.
 But there also is a third variant to compile documents which can be used also to improve package development and in general the stability of \LaTeX{}:
 Adapting DevOps methods, like \acro{CI/CD} for the workflow and compiling using automated workflows.
@@ -153,32 +170,37 @@ Using that it would be possible to use git without even noticing as it's attache
 As the \LaTeX{} project is using GitHub this is how we are going to start with detailed explanation and afterwards will create a matching setup on the other platforms.
 There have been example repositiories created which can be used as a template.
 
-\section{Pipelines for document authors}
+The explanations within the GitHub section are a bit more detailed.
+It is planned to have some extended version of this article where instructions are only focusing on the specific platform.
 
-The most setups are somehow based on Docker.
-The basic structure was described in \cite{islandoftex-docker} including options to run a container locally.
-The so-called runners for the pipeline would do the same. They automatically start a container wich a specific image and are able to run scripts in there.
+\section{Compiling a document in a CI pipeline}
 
-In general a document building pipeline has to consist of the following steps:
+\subsection{First steps with GitHub Actions}}
 
-\begin{itemize}
-\item Setup the container
-\item checkout the repository
-\item run the compilation command
-\end{itemize}
+To get started we need a git repository somehow hosted GutHub.
+May also be a private one.
 
-GitHub is adding some abstraction layer for those tasks.
-So it's possible to find actions to do multiple steps at once, e.g. the latex-action \cite{latex-action} is starting a container inside the container to run latexmk. Or just addoing commands like in a shell-script.
+Thinking of the tasks we have to resolve there will be:
 
-The configuration for GitHub is done by creating a yaml file within the repositories subdirectory \file{.github/workflows/build.yml}.
+\begin{enumerate}
+\item Prepare the environment to have some \LaTeX{} distribution
+\item Run \LaTeX{}
+\end{enumerate}
+%
+\noindent GitHub is providing pre-configured actions which are able to combine multiple steps, e.\,g. the latex-action \cite{latex-action}.
+This  is starting another container inside the action container to run latexmk.
+But those actions usually limit the configuration options to simplify the interface.
+We are going to checkout both variants.
+
+The configuration for an action is done by creating a yaml file within the repositories subdirectory \file{.github/workflows/hellow-world.yml}.
+The name may be choosen individually.
+The following code snipped shows a minimal configuration:
 
 %\begin{listing}
-\inputminted[linenos]{yaml}{examples/hello-world.yml}
+\inputminted{yaml}{examples/hello-world.yml}
 %\caption{ \file{.github/workflows/build.yml} directly using a LaTeX action}
 % \label{list:hello-world}
 %\end{listing}
-
-Listing \ref{list:hello-world} shows a minimal action config:
 
 \begin{description}
 \item[name:] of the workflow.
@@ -204,20 +226,115 @@ As one can see it's possible to directly enter bash code in there.
 This example is only creating some output and should therefore run without any issues.
 \end{description}
 
-This action has nothing to do with the tasks which was planned to do.
-So it's necessary to extend the steps.
+On GitHub the actions are automatically enabled.
+So it's enough to add a yaml configuration file within the repository and since we chose one of the runner variants which are also provided by Github, no additional setup is required.
+The pipelie should start running.
 
-\inputminted[linenos,firstline=5]{yaml}{examples/latex-basic.yml}
+The status can always be checked having a look at
+\url*{<repo url>/actions} e.g. for for first of our demo repositories, this can be found at
+\citefield{workflow-github}{url}/actions.%TODO url - needs expansion
+
+\noindent\includegraphics[width=\linewidth]{screenshot-pipeline-successful}
+
+The pipeline run successful but did not anything but create some shell output.
+So next step is to move towards \LaTeX{} usage.
+
+\subsection{Actually using \LaTeX}
+
+As already mentioned actions are mostly based on docker.
+Luckily some of the us live on the Island of TeX and prepare some images we could make use of here\footnote{Special thanks to the other islanders at that point!}.
+The setup of the images was described within \cite{islandoftex-docker-gitlab}.
+
+The first part of the workflow will stay the same for the moment.
+Changes only apply after `runs-on`:
+
+\inputminted[firstline=5, lastline=12,gobble=3]{yaml}{examples/latex-basic.yml}
+
 
 \begin{description}
-\item[container:] By this way it's possible to choose a different container image. Here it's the \TeXLive{} container provided by the Island of \TeX.
-\item[steps:] The second step is structured as before and just received an extra name. This command is directly run. The first step is different. It uses the |uses:| directive. This is referring to a predefined GitHub action\cite{action/checkout}.
+\item[container:] Choosing the IoT \containerimage{texlive-latest} image which provides a full TeX Live + some tools\cite{islandoftex-docker}.
+\item[steps:]
+The first step looks different from the one, we had before.
+It received a name, which is helpful to simplify debugging as GitHub will tell us which step failed.
 
-These can be used to combine multiple tasks in one step. For example using the action is automatically resolving the login process and takes care of choosing the directories correctly. After this step the shell to run the other command is  inside the repositories root directory.
+\item[uses:] is a reference to another action.
+Github uses this to have some kind of interface for pre-configured pipelines as there are tasks which are more complex than it seems.
+So \action{checkout@v4} refers to a separate repository \cite{github-action-checkout}.
+This action is taking care of the authentication and some interals, so we don't have to deal with details.
+
+Important is, that after this action the following steps start being executed within the root directory of our repository.
+
+The second step is kind of the same as in the first example, but this time we run \command{latexmk}\cite{latexmk} using \command{lualatex}.
+By default this will run on all \file{*.tex} files within the root directory.
+So we don't even have to depend on the file name as long as we store files to be included within subdirectories.
 \end{description}
 
-As latexmk automatically tries to detect how many runs are necessary it's a great choice.
-Additionally it will automatically run onto all *.tex files in the directory. Any other setup could either be configured using the workflow run or a local latexmkrc file. Details on the configuration can be found in the documentation \cite{latexmk}.
+\subsection{Where's the PDF?}
+If the pipeline run successfull there will be a green checkmark but we will fail finding the PDF somewhere.
+This is because GitHub does not yet know which files actually are the output which should be kept.
+Such files are called \enquote{artifacts}, so now it should be added to keep the PDF as such and upload that one to GitHub.
+
+\inputminted[firstline=13, lastline=17,gobble=3]{yaml}{examples/latex-basic.yml}
+
+After another (successful) run of the pipeline it's possible to access the pdf wrapped within a  \file{*.zip} at the run's status page.
+Clicking on the run on the actions overview page leads there:
+
+<include image of the artifact>
+
+Sadly GitHub is currently does not provide an option for individual files without a zip.
+Also it's not possible to have a static link pointing to the latest artifacts.
+Other plattforms like Gitlab do provide that feature by default.
+To resolve and make the pdf easier to access on GitHub it's required to use additional actions.
+The most common way to do it is publishing the pdf an orphan branch.
+Usually this mechanism is used to create web pages and is called github-pages.
+
+<insert listing>
+
+\subsection{Differences with actions on Forgejo}
+Forgejo\cite{forgejo} is another code plattform which has the aim to be more open than GitHub.
+It can be self-hosted and now provides mechanism similar got GitHub actions.
+
+They will never completly do the same as GitHub does, but they are almost compatible.
+
+By default Forgejo will search within \directory{.forgejo/workflows/} for configuration files.
+If none are found it will even fall back to look inside the \directory{.github/} directory.
+Only issue would probably face is that there are no hosted runners on most instances.
+And in case there are they will probably be different from GitHub's.
+
+But in case you can configure a runner yourself and use the labels as the GitHub runner \cite[described in]{forgejo-runner-config} was using it's possible to use the same workflow configs on both.
+The provided demo repositories on codeberg.org, which is a Forgejo instance, also explain how the runners used there are configured.
+
+\section{Compiling a document using GitLab CI}
+
+Gitlab is not that much different. Actually it's a bit easier to use here as it provides some features automatically.
+For example it's not necessary to checkout into the repository.
+That's already done by default.
+
+\inputminted[breaklines,breakafter=/]{yaml}{examples/latex-basic-gitlab.yml}
+
+As mentioned before Gitlab is providing an API which allows to create static links to the artifacts.
+So the \file{README.md} of the demo repositories there include a link of the following structure:
+
+<Link to Gitlab Repo>/-/jobs/artifacts/<branch>/browse?job=<name of the job>
+
+this will list all artifacts attached to the job.
+Using the example config on one of the demo projects would make it
+
+\citefield{workflow-document-gitlab}{url}/-/jobs/artifacts/main/browse?job=run-LaTeX
+
+
+
+
+
+
+
+%
+%As latexmk automatically tries to detect how many runs are necessary it's a great choice for this use case.
+%Additionally it will automatically run onto all *.tex files within the root directory.
+%Any other setup could either be configured using the workflow run or a local latexmkrc file.
+%Details on the configuration can be found in the documentation \cite{latexmk}.
+
+
 
 
 
@@ -225,8 +342,9 @@ Additionally it will automatically run onto all *.tex files in the directory. An
 %\printbibliography
 \def\url{\tbsurl}
 \SetBibJustification{\raggedright \advance\itemsep by 1pt plus1pt minus1pt }
-\bibliographystyle{tugboat}
-\bibliography{tug2024-cicd}
+%\bibliographystyle{tugboat}
+%\bibliography{tug2024-cicd}
+\printbibliography
 \makesignature
 
 
