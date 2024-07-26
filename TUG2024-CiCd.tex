@@ -37,7 +37,6 @@ not a strict requirement.}
 
 \title[TUG2024: LaTeX CI/CD]{Tutorial:\newline Creation of \LaTeX\ documents using a cloud-based pipeline}
 \date{2024-07-19}
-\author{Oliver Kopp \and Marcel~Krüger \and Marei~Peischl}
 
 % repeat info for each author; comment out items that don't apply.
 \author{Marei Peischl}
@@ -85,8 +84,20 @@ not a strict requirement.}
 	\TeX\,Live
 }
 
+\newcommand*{\TeXLive}{\acro{\TeX\,Live}}
 
-%TODO acro 
+\newcommand*{\file}[1]{\texttt{#1}}
+
+\usepackage{fontspec}
+
+\directlua{luaotfload.add_fallback
+("emojifallback",
+	{"NotoColorEmoji:mode=harf"}
+)}
+
+\setmonofont{Latin Modern Mono}[RawFeature={fallback=emojifallback}]
+
+%TODO acro
 % cici = continous ingegration and continous delivery
 \begin{document}
 
@@ -95,58 +106,35 @@ not a strict requirement.}
 Everything moved or is moving towards the cloud.
 \LaTeX{} is already there for about 10 years and today it's quite common to use a web editor for collaboration and local compilation became the \enquote{nerdy} way.
 But there also is a third variant to compile documents which can be used also to improve package development and in general the stability of \LaTeX{}:
-Adapting DevOps methods, like \acro{CI/CD} for the workflow and compiling using automated workflows. 
+Adapting DevOps methods, like \acro{CI/CD} for the workflow and compiling using automated workflows.
 
 \section{Why should I?}
 Having some working workflows usually makes people to not think about changing anything.
 So there have to be reasons why it might be worth reading this article or even integrating the mechanisms into projects.
 
-Originally the idea was to folliw the current state of OpenSource development and open a door for contributors in the development process, 
+Originally the idea was to folliw the current state of OpenSource development and open a door for contributors in the development process,
 For example the \LaTeX{} Project is currently creating a lot of user interaction via their GitHub projects~\cite{latex3-github} and also taking contributions from which the whole \TeX/\LaTeX{} community will profit.
 
 But the advantages of these methods go even further\footnote{We focus on some aspects as this could probably male an article by itself.}
 
 \subsection{Works for me?!}
-Sometimes compilation failes on some systems, but doesn't on others. 
-This may have tons of reasons so having some pipeline configured will show if this a machine specific issue or a general one. 
+Sometimes compilation failes on some systems, but doesn't on others.
+This may have tons of reasons so having some pipeline configured will show if this a machine specific issue or a general one.
 
 \subsection{Compatibility and regression testing}
 It's possible to run the workflow on multiple TeX distributions or versions.
 This can be used to know if there are any issue with some package update before the actual update where downgrading may be complicated\footnote{That's another issue to address … but a differen story.}
 
-Additionally you can also use it to check backwars compatibility e.\,g. if one collaborator is using a Debian Stable which is stuck on some outdated version. 
+Additionally you can also use it to check backwards compatibility e.\,g. if one collaborator is using a Debian Stable which is stuck on some outdated version.
 As mentioned the \LaTeX{} Project Team is already using this techniques and even provides functionality for regression testing within their build system \enquote{l3build} \cite{l3build}.
 
 Using this as a package developer enables a general interface to be used for regression testing.
-This allows to avoid some of the bugs which otherwhise would be published and should be found by a user. 
+This allows to avoid some of the bugs which otherwhise would be published and should be found by a user.
 Also it can be used to avoid inconsitent structures, e.\,g. one of the authors recently found that tons of packages and files within \TeXLive{} don't have a proper version number set within the code.
 
 \section{Structure of this tutorial}
 
 The idea is to introduce readers to the basics of setting up automated workflows on GitLab, GitHub or Forgejo.
-As all plattforms are git based we expect the project to be some kind of git repository.
-In case the reader does not yet use git, there is a little bit of information attached to this tutorial.
-Using that it would be possible to use git without even noticing as it's attached to the autosave function of an editor. 
-
-For the workshop at TUG2024 there were demo projects prepared which can be used as a template.
-An overview of all is shown in table \ref{tab:demo-repos}.
-
-\begin{table}
-\caption{Overview over the template repositories prepared including direct links}
-\begin{tabularx}{\linewidth}{llX}
-Name & Setup Info & Description\\
-
-\end{tabularx}
-\end{table}
-
-
-
-The tutorial at TUG2024 was the result of some discussion after DANTE2024.
-Oliver Kopp had offered a workshop there introducing the participants to use GitHub Actions \cite{cicd-workshop-DANTE2024}. 
-This was a bit too specific and missed to show the full power of using automated workflows, so the tutorial at TUG was an extension of this.
-Within this article the idea now is to have a written tutorial instructing users to take their first steps.
-The source will be published as well as we want this resource to be improved as much as possible.
-So any kind of feedback is very welcome.
 
 This tutorial mainly addresses two groups of users:
 
@@ -154,18 +142,85 @@ This tutorial mainly addresses two groups of users:
 \item Authors which focus on typesetting actual content. This includes collaborations.
 \item Package or template developers, who provide their work to be used by the first group.
 \end{enumerate}
+
 The second group obviously can also  use workflows of the first e,g, for typesetting documentation.
-So developers usually use an extended version of the the setup provided for the authors. 
+So developers usually use an extended version of the the setup provided for the authors.
+
+As all used platforms usually are used to be used with git we expect the project to be some kind of git repository.
+In case the reader does not yet use git, there is a little bit of information attached to this tutorial.
+Using that it would be possible to use git without even noticing as it's attached to the autosave function of an editor.
+
+As the \LaTeX{} project is using GitHub this is how we are going to start with detailed explanation and afterwards will create a matching setup on the other platforms.
+There have been example repositiories created which can be used as a template.
+
+\section{Pipelines for document authors}
+
+The most setups are somehow based on Docker.
+The basic structure was described in \cite{islandoftex-docker} including options to run a container locally.
+The so-called runners for the pipeline would do the same. They automatically start a container wich a specific image and are able to run scripts in there.
+
+In general a document building pipeline has to consist of the following steps:
+
+\begin{itemize}
+\item Setup the container
+\item checkout the repository
+\item run the compilation command
+\end{itemize}
+
+GitHub is adding some abstraction layer for those tasks.
+So it's possible to find actions to do multiple steps at once, e.g. the latex-action \cite{latex-action} is starting a container inside the container to run latexmk. Or just addoing commands like in a shell-script.
+
+The configuration for GitHub is done by creating a yaml file within the repositories subdirectory \file{.github/workflows/build.yml}.
+
+%\begin{listing}
+\inputminted[linenos]{yaml}{examples/hello-world.yml}
+%\caption{ \file{.github/workflows/build.yml} directly using a LaTeX action}
+% \label{list:hello-world}
+%\end{listing}
+
+Listing \ref{list:hello-world} shows a minimal action config:
+
+\begin{description}
+\item[name:] of the workflow.
+This is important if a project contains multiple workflows.
+
+\item[on:] This directive selects when the workflow should be started.
+This setting means it will be started on any push. So whenever the repository on the server receives an update.
+
+\item[jobs] contans a list of jobs to be run after each other.
+For example it's quite common to have one for testing and one for deployment.
+In this example it only contains one job called \enquote{action-test}.
+
+\item[runs-on:] the value corresponds to a runner setup.
+Runners are the machines to actually run the workflow.
+It doesn't have to be the same server as the one where the repository is hosted.
+In the example \enquote{ubuntu-latest} is chosen.
+This is one of the provided runners by GitHub which is based on ubuntu.
+It includes nodejs and some tooling to simplify the work using predefned actions.
+A full list of the runners and detailed description of the images can be found at cite{github-hosted-runners}.
+
+\item[steps:] This is what the workflow should actually do.
+As one can see it's possible to directly enter bash code in there.
+This example is only creating some output and should therefore run without any issues.
+\end{description}
+
+This action has nothing to do with the tasks which was planned to do.
+So it's necessary to extend the steps.
+
+\inputminted[linenos,firstline=5]{yaml}{examples/latex-basic.yml}
+
+\begin{description}
+\item[container:] By this way it's possible to choose a different container image. Here it's the \TeXLive{} container provided by the Island of \TeX.
+\item[steps:] The second step is structured as before and just received an extra name. This command is directly run. The first step is different. It uses the |uses:| directive. This is referring to a predefined GitHub action\cite{action/checkout}.
+
+These can be used to combine multiple tasks in one step. For example using the action is automatically resolving the login process and takes care of choosing the directories correctly. After this step the shell to run the other command is  inside the repositories root directory.
+\end{description}
+
+As latexmk automatically tries to detect how many runs are necessary it's a great choice.
+Additionally it will automatically run onto all *.tex files in the directory. Any other setup could either be configured using the workflow run or a local latexmkrc file. Details on the configuration can be found in the documentation \cite{latexmk}.
 
 
 
-
-\section{Version controlling}
-It's not enforced but highly recommended to use some version vontrol system if you want to get started using \acro{CI/CD} methods.
-Within this tutorial git \cite{git} will be used.
-To get started with this one does not have any idea about how to use git properly with software development.
-In case it's not used yet there are editors supporting git to be used with the autosave functionality.
-This would already be enough for using the setups described in ths article.
 
 %\printbibliography
 \def\url{\tbsurl}
