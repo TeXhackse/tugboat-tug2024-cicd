@@ -446,11 +446,10 @@ One of the authors created another action to take care of this:
     retention-days: 3
 \end{minted}
 
-The special about this step is, that \mintinline{yaml}|if: ${{ always() }}| has been added.
-This will enforce the step to be run also if the step before failed.
-As this is the case where we need it, it's necessary to add this configuration.
-
-
+Apart from uploading the artifacts, this configuration illustrates another important point.
+In contrast to the \acro{PDF} of a document, where we are only interested in the success output, we are less interested in success than failure output for test suites.
+To let GitHub know that we actually are interested in these artifacts, \mintinline{yaml}|if: ${{ always() }}| has been added.
+This will force the step to run also if the step before failed.
 
 
 %\printbibliography
