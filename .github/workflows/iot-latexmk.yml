@@ -1,0 +1,12 @@
+name: latexmk
+on: [push]
+jobs:
+  action-test:
+    runs-on: ubuntu-latest
+    container:
+      image: texlive/texlive:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Run latexmk
+        run: "latexmk"

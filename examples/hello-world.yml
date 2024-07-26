@@ -1,0 +1,7 @@
+name: Hello World Action
+on: [push]
+jobs:
+  action-test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Hello world 🦁🦆"

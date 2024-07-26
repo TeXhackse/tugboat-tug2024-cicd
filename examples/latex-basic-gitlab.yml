@@ -1,0 +1,7 @@
+runlatex:
+  image: registry.gitlab.com/islandoftex/images/texlive:latest
+  script:
+    - 'latexmk --lualatex'
+  artifacts:
+    paths:
+    - "./*.pdf"

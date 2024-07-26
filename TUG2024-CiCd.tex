@@ -175,7 +175,7 @@ It is planned to have some extended version of this article where instructions a
 
 \section{Compiling a document in a CI pipeline}
 
-\subsection{First steps with GitHub Actions}}
+\subsection{First steps with GitHub Actions}
 
 To get started we need a git repository somehow hosted GutHub.
 May also be a private one.
@@ -239,7 +239,7 @@ The status can always be checked having a look at
 The pipeline run successful but did not anything but create some shell output.
 So next step is to move towards \LaTeX{} usage.
 
-\subsection{Actually using \LaTeX}
+\subsubsection{Actually using \LaTeX}
 
 As already mentioned actions are mostly based on docker.
 Luckily some of the us live on the Island of TeX and prepare some images we could make use of here\footnote{Special thanks to the other islanders at that point!}.
@@ -269,7 +269,7 @@ By default this will run on all \file{*.tex} files within the root directory.
 So we don't even have to depend on the file name as long as we store files to be included within subdirectories.
 \end{description}
 
-\subsection{Where's the PDF?}
+\subsubsection{Where's the PDF?}
 If the pipeline run successfull there will be a green checkmark but we will fail finding the PDF somewhere.
 This is because GitHub does not yet know which files actually are the output which should be kept.
 Such files are called \enquote{artifacts}, so now it should be added to keep the PDF as such and upload that one to GitHub.
@@ -304,13 +304,15 @@ And in case there are they will probably be different from GitHub's.
 But in case you can configure a runner yourself and use the labels as the GitHub runner \cite[described in]{forgejo-runner-config} was using it's possible to use the same workflow configs on both.
 The provided demo repositories on codeberg.org, which is a Forgejo instance, also explain how the runners used there are configured.
 
-\section{Compiling a document using GitLab CI}
+\subsection{Compiling a document using GitLab CI}
 
 Gitlab is not that much different. Actually it's a bit easier to use here as it provides some features automatically.
 For example it's not necessary to checkout into the repository.
 That's already done by default.
 
 \inputminted[breaklines,breakafter=/]{yaml}{examples/latex-basic-gitlab.yml}
+
+Here the steps only are a list of commands run after each other. Currently the list only contains one \command{latexmk} call.
 
 As mentioned before Gitlab is providing an API which allows to create static links to the artifacts.
 So the \file{README.md} of the demo repositories there include a link of the following structure:
@@ -322,19 +324,120 @@ Using the example config on one of the demo projects would make it
 
 \citefield{workflow-document-gitlab}{url}/-/jobs/artifacts/main/browse?job=run-LaTeX
 
+\section{Testing with multiple versions or compilers}
+
+We promised one can extend these setups to test using multiple versions or compilers.
+Different compilers are actually sraightforward by including additional steps running different commands.
+Of course it's possible to use those in separate actions or even workflow files.
+There is no general way to strucure those, as it always depends on if they all should always run or better depend on each other to save resources.
+
+For using other versions of \TeXLive{} the IoT is providing historic images.
+
+\begin{minted}[escapeinside=||,breaklines,breakafter=/]{yaml}
+test-on-IoT-texlive:
+  runs-on: ubuntu-22.04
+  strategy:
+    matrix:
+      image: ["TL2022-historic", |…|]
+  name: "Test on ${{ matrix.image }}"
+  container:
+    image: registry.gitlab.com/islandoftex/images/texlive:${{ matrix.image }}
+  steps:
+\end{minted}
+
+\begin{description}
+\item[strategy:] this is used to create a loop over elements.
+In this case a variable called \mintinline{yaml}|matrix| containing a list of images is used and the content can be accessed within other parts of the file using \mintinline{yaml}|${{ matrix.image }}|.
+So the first run will be on \enquote{texlive:TL2022-hostoric}.
+A full list of the provided images can be found at \cite{islandoftex-docker-gitlab}.
+\end{description}
+
+For Gitlab again the structure is similar but not matching:
+
+\begin{minted}[escapeinside=||,breaklines,breakafter=/]{yaml}
+check:
+  image: registry.gitlab.com/islandoftex/images/texlive:$TEXLIVE_VERSION
+ |[… contains script + artifacts … ]|
+  parallel:
+    matrix:
+      - TEXLIVE_VERSION: ['TL2022-historic', 'TL2023-historic', 'latest']
+        TEX_ENGINE: ['pdflatex', 'xelatex', 'lualatex']
+\end{minted}
+
+Here the variable is more like a bash variable but can be used the same way.
 
 
+\section{Minimize the build container}
+We currently use a full TeX Live installation to have the most convenient setup.
+The IoT Images even support additional tools like arara or minted.
+But sometimes it might be useful to minimize the build container, either because downloads take too long or we have limited space available on the runner server or just to save resources.
 
+The most annoying part here might be to find out which packages are actually needed to compile…
 
+So… the Island of TeX proudly presents: DEPP – The DEPendency Printer for \TeXLive\cite{depp}
 
+As this article should focus on pipelines we won't go into detail, but the idea is that DEPP is producing a file listing all TeX Live packages necessary for the build.
+For the example projects these look like:
 
-%
-%As latexmk automatically tries to detect how many runs are necessary it's a great choice for this use case.
-%Additionally it will automatically run onto all *.tex files within the root directory.
-%Any other setup could either be configured using the workflow run or a local latexmkrc file.
-%Details on the configuration can be found in the documentation \cite{latexmk}.
+\begin{minted}[breaklines,escapeinside=||,numbers=false]{text}
+#Proudly generated by the Island of TeX's |[…]|
+blindtext
+cm
+|…|
+\end{minted}
 
+\subsection{GitHub}
 
+On Github there are two actions installing TeX Live as a part of the workflow.
+Using those it's possible to minimize the container and this will also reduce the build time.
+
+\begin{minted}{yaml}
+- name: Install TeX Live
+        uses: zauguin/install-texlive@v3
+        with:
+          package_file: .github/tl_packages
+\end{minted}
+
+This snippet can be used within \directive{steps:} and makes the \directive{container:} directive to be obsolete, so it should be removed.
+The \directive{package_file:} is the path to the DEPP-output or some manually created list of packages.
+
+ \subsection{GitLab}
+
+ On Gitlab the simplified syntax makes this a bit more complex.
+ The DEPP repository is luckily providing a shell script to install a TeX Live based on the package file.
+ This can be used in the pipelines to modify the container.
+ Another option would be to provide a container image which already contains the necessary packages.
+ If a self hosted runner is used, this usually is the best option as caching can be configured to controll when the container is rebuilt or updated.
+
+\section{Pipelines for package developers}
+
+As promised the advantages or using automated pipelines are even more when used within a real development process.
+In this case we expect the repository to contain a package and some kind of l3build configuration.\footnote{also works with other tools, but have to focus}
+
+The latex or as we used latexmk command will be replaced by
+
+\begin{minted}{yaml}
+- name: Run l3build
+  run: l3build check --show-log-on-error -q -H
+\end{minted}
+
+This will automatically run all testfiles according to the l3build setup.
+As this is within development the artifacts are totally different.
+We're not really interested in a pdf but the test output.
+One of the authors created another action to take care of this:
+
+\begin{minted}{yaml}
+- name: Archive failed test output
+  if: ${{ always() }}
+  uses: zauguin/l3build-failure-artifacts@v1
+  with:
+    name: testfiles-${{ matrix.platform }}
+    retention-days: 3
+\end{minted}
+
+The special about this step is, that \mintinline{yaml}|if: ${{ always() }}| has been added.
+This will enforce the step to be run also if the step before failed.
+As this is the case where we need it, it's necessary to add this configuration.
 
 
 

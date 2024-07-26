@@ -1,0 +1,9 @@
+test-on-iot-texlive:
+  runs-on: ubuntu-22.04
+  strategy:
+    matrix:
+      image: ["TL2022-historic", "TL2023-historic", "latest"]
+  name: "Test suite Linux (Island) on ${{ matrix.image }}"
+  container:
+    image: registry.gitlab.com/islandoftex/images/texlive:${{ matrix.image }}
+  steps:
