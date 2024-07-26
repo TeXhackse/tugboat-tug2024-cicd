@@ -279,7 +279,7 @@ Such files are called \enquote{artifacts}, so now we will adjust the action to k
 
 \inputminted[firstline=13, lastline=17,gobble=3]{yaml}{examples/latex-basic.yml}
 
-After another (successful) run of the pipeline it's possible to access the pdf wrapped within a  \file{*.zip} at the run's status page.
+After another (successful) run of the pipeline it's possible to access the \acro{PDF} wrapped within a  \file{*.zip} at the run's status page.
 Clicking on the run on the actions overview page leads there:
 
 <include image of the artifact>
@@ -287,7 +287,7 @@ Clicking on the run on the actions overview page leads there:
 Sadly GitHub is currently does not provide an option for individual files without a zip.
 Also it's not possible to have a static link pointing to the latest artifacts.
 Other plattforms like GitLab do provide that feature by default.
-To resolve and make the pdf easier to access on GitHub it's required to use additional actions.
+To resolve and make the \acro{PDF} easier to access on GitHub it's required to use additional actions.
 The most common way to do it is publishing the pdf an orphan branch.
 Usually this mechanism is used to create web pages and is called github-pages.
 
@@ -426,7 +426,7 @@ The latex or as we used latexmk command will be replaced by
 
 This will automatically run all testfiles according to the l3build setup.
 As this is within development the artifacts are totally different.
-We're not really interested in a pdf but the test output.
+We're not really interested in a \acro{PDF} but the test output.
 One of the authors created another action to take care of this:
 
 \begin{minted}{yaml}
