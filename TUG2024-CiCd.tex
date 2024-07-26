@@ -374,9 +374,12 @@ Here the variable is more like a bash variable but can be used the same way.
 
 
 \section{Minimize the build container}
-We currently use a full TeX Live installation to have the most convenient setup.
-The IoT Images even support additional tools like arara or minted.
-But sometimes it might be useful to minimize the build container, either because downloads take too long or we have limited space available on the runner server or just to save resources.
+The previous examples used a full TeX Live installation to have the most convenient setup.\footnote{Almost, the images we used neither include the documentation nor the source tree of TeX Live.}
+The IoT images even ship all dependencies of additional tools like arara or minted so that all tools in TeX Live will work out of the box.
+
+Still, sometimes you will not need all the bells and whistles and thre are advantages to smaller build containers.
+For instance, downloading more than one gigabyte can take quite some time long.
+Or you may only have limited disk space available on the runner server.
 
 The most annoying part here might be to find out which packages are actually needed to compile…
 
