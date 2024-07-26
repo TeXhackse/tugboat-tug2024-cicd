@@ -210,8 +210,8 @@ The following code snippet shows a minimal configuration:
 \item[name:] of the workflow.
 This is important if a project contains multiple workflows.
 
-\item[on:] This directive selects when the workflow should be started.
-This setting means it will be started on any push. So whenever the repository on the server receives an update.
+\item[on:] This directive indicates conditions under which the workflow will be started.
+In this configuration, the jobs will be started on any push, i.\,e., whenever the repository on the server receives an update.
 
 \item[jobs] contans a list of jobs to be run after each other.
 For example it's quite common to have one for testing and one for deployment.
