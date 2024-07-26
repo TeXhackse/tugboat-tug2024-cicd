@@ -274,7 +274,7 @@ So we don't even have to depend on the file name as long as we store files to be
 
 \subsubsection{Where's the PDF?}
 If the pipeline succeeds, there will be a green checkmark but we will fail to find the PDF somewhere.
-This is because GitHub does not yet know which files actually are the output which should be kept.
+This is because GitHub does not know which files actually are the output which should be kept.
 Such files are called \enquote{artifacts}, so now it should be added to keep the PDF as such and upload that one to GitHub.
 
 \inputminted[firstline=13, lastline=17,gobble=3]{yaml}{examples/latex-basic.yml}
