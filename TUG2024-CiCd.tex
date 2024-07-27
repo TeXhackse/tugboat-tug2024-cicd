@@ -88,6 +88,8 @@ not a strict requirement.}
 
 \usepackage{xspace}
 \newcommand*{\TeXLive}{\acro{\TeX\,Live}\xspace}
+\newcommand*{\DEPP}{\acro{DEPP}\xspace}
+
 
 
 
@@ -289,7 +291,7 @@ Sadly GitHub currently does not provide an option for individual files without a
 Also it's not possible to have a static link pointing to the latest artifacts.
 Other platforms like GitLab do provide that feature by default.
 To resolve this and make the \acro{PDF} easier to access on GitHub it's required to use additional actions.
-The most common way to do it is publishing the pdf an orphan branch.
+The most common way to do it is publishing the \acro{PDF} to an orphan branch.
 Usually this mechanism is used to create web pages and is called github-pages.
 
 <insert listing>
@@ -388,9 +390,9 @@ Side remark: If you are not looking to reduce the images themselves but the comp
 
 Back to minimizing the build environment: the most annoying part here might be to find out which packages are actually needed to compile…
 
-So the Island of\TeX{} proudly presents: DEPP – The DEPendency Printer for \TeXLive\cite{depp}.\footnote{If you are German, do not be surprised if this tool is cleverer than its name suggests.}
+So the Island of\TeX{} proudly presents: \DEPP – The DEPendency Printer for \TeXLive\cite{depp}.\footnote{If you are German, do not be surprised if this tool is cleverer than its name suggests.}
 
-As this article should focus on pipelines we won't go into detail on the tool itself but instead show how DEPP produces a file listing all \TeXLive packages necessary for the build.
+As this article should focus on pipelines we won't go into detail on the tool itself but instead show how \DEPP produces a file listing all \TeXLive packages necessary for the build.
 For the example projects these look like:
 
 \begin{minted}[breaklines,linenos=false,xleftmargin=0pt,escapeinside=||]{text}
@@ -413,12 +415,12 @@ Using those it's possible to minimize the container and this will also reduce th
 \end{minted}
 
 This snippet can be used within \directive{steps:} and makes the \directive{container:} directive to be obsolete, so it should be removed.
-The \directive{package_file:} is the path to the DEPP-output or some manually created list of packages.
+The \directive{package_file:} is the path to the \DEPP-output or some manually created list of packages.
 
  \subsection{GitLab}
 
  On GitLab the simplified syntax makes this a bit more complex.
- The DEPP repository is luckily providing a shell script to install a \TeXLive based on the package file.
+ The \DEPP repository is luckily providing a shell script to install a \TeXLive based on the package file.
  This can be used in the pipelines to modify the container.
  Another option would be to provide a container image which already contains the necessary packages.
  If a self-hosted runner is used, this usually is the best option as caching can be configured to control when the container is rebuilt or updated.
