@@ -315,6 +315,8 @@ Actually, it's a bit easier to set up continuous integration here as some steps 
 For example, it's not necessary to checkout the repository.
 That's already done by default.
 
+The configuration file has to be placed within the repository's root directory and is named \file{.gitlab-ci.yml}.
+
 \inputminted[breaklines,breakafter=/]{yaml}{examples/latex-basic-gitlab.yml}
 
 Here the steps only are a list of commands run after each other. Currently the list only contains one \command{latexmk} call.
