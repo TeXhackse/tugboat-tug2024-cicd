@@ -524,6 +524,23 @@ within a local repository containing some Gitlab CI configuration.
 %It's possible to configure the pipelines to run directly on the machine instead of using docker containers.
 
 
+\section{Continuous Development}
+
+Of course every configuration shown here is only an example and can be extended depending on the project's requirements.
+It's possible to run arbitrary commands, especially for complex setups this might be necessary.
+
+For example when creating magazines it's possible to continuously create print and online version, excerpts of single articles as well as  HTML/EPUB  output, while the editors only have to wait for the compilation of the article they actually are working on.
+
+The same goes for study material where we have rendered version including solutions and some without or documents which share a lot of links between each other and therefore require a lot of runs.
+
+Integrating these structures into more advanced git usage like a useful branching concept can also help to improve collaboration or simplify the contribution process within OpenSource projects.
+It will reduce frustration for maintainers as some issues don't have to be checked manually.
+
+…
+
+
+
+
 %\printbibliography
 \def\url{\tbsurl}
 \SetBibJustification{\raggedright \advance\itemsep by 1pt plus1pt minus1pt }
