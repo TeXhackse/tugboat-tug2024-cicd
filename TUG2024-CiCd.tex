@@ -461,6 +461,7 @@ The \directive{package_file:} is the path to the \DEPP-output or some manually c
 As promised, the advantages of using automated pipelines are even more significant when used within the development process of packages or templates.
 In this case, we expect the repository to contain a package and some kind of \command{l3build} configuration.\footnote{Of course, the setup itself also works for other tools, but that is out of scope for this article.}
 
+\subsection{GitHub}
 The \command{latex} command, or \command{latexmk} in the examples, will be replaced by
 
 \begin{minted}{yaml}
@@ -478,16 +479,49 @@ One of the authors created another action to take care of this:
   if: ${{ always() }}
   uses: zauguin/l3build-failure-artifacts@v1
   with:
-    name: testfiles-${{ matrix.platform }}
+    name: testfiles
     retention-days: 3
 \end{minted}
 
 Apart from uploading the artifacts, this configuration illustrates another important point.
 In contrast to the \acro{PDF} of a document, where we are only interested in the success output, we are less interested in success than failure output for test suites.
 To let GitHub know that we actually are interested in these artifacts, \mintinline{yaml}|if: ${{ always() }}| has been added.
-This will force the step to run also if the step before failed.
+This will force the step to run also if the previous step failed.
+
+\subsection{GitLab}
+
+Again GitLab directly supports this without loading external extensions.
+
+\begin{minted}{yaml}
+  - l3build check --show-log-on-error -q -H
+artifacts:
+  when: on_failure
+  paths:
+    - ./build/test/*.diff
+\end{minted}
+
+This simplifies the standard setup but is less flexible.
+So for example if you want to use different artifacts for success than failure, it's required to do that within two separate jobs within GitLab.
 
 
+\section{Running locally}
+Within the tutorial at TUG there was a short journey to running the pipelines locally.
+This might be helpful for debugging as one can control the steps manually or to ensure the local setup matches the one on the server.
+
+These setups usually use Docker.
+For the platforms which use actions there is a tool called \enquote{act} to simplify that process using the Docker API.
+%Forgejo is extending this tool and using it for their runners\cite{forgejo-runner}.
+
+Gitlab is extending this by the option to simply have a gitlab runner installed locally.
+This provides the option of running
+
+\begin{minted}{shell}
+gitlab-runner exec
+\end{minted}
+
+within a local repository containing some Gitlab CI configuration.
+
+%It's possible to configure the pipelines to run directly on the machine instead of using docker containers.
 
 
 %\printbibliography
