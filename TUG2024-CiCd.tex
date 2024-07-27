@@ -122,7 +122,7 @@ not a strict requirement.}
 
 Everything went into or is moving towards the cloud.
 \LaTeX{} is already there for about 10 years and today it's quite common to use a web editor for collaboration and local compilation became the \enquote{nerdy} way.
-But there also is a third variant to compile documents which can be used also to improve package development and in general the stability of \LaTeX{}:
+But there also is a third variant to compile documents which can be used also to improve package development and in general the stability of \LaTeX:
 adapting DevOps methods, like continuous integration and delivery (\acro{CI/CD}) using automated workflows.
 
 As a very rough working definition, let us consider a \acro{CI/CD} workflow as a number of steps to compile a TeX document to \acro{PDF} on some kind of online service that has access to the source files.
@@ -137,21 +137,21 @@ For example, the \LaTeX{} Project is currently creating a lot of user interactio
 But the advantages of these methods extend beyond that. We will focus on some cherry-picked aspects of that as the remainder could probably make an article by itself.
 
 \subsection{Works for me?!}
-Sometimes, I can successfully compile my document on my machine but my supervisor can't on his.
+Sometimes, I can successfully compile my document on my machine, but my supervisor can't on his.
 There are tons of reasons why a TeX compilation may succeed on one system and fail on another.
 Running some external continuous integration pipeline will not only illustrate the necessary steps to go from source to the full \acro{PDF}.
-It will also help understand if problems are machine specific issues or a general ones.
+It will also help understand if problems are machine specific issues or general ones.
 
 \subsection{Compatibility and regression testing}
 It's possible to run workflows on multiple TeX distributions or versions.
 This can be used to test if there are any issues with some package update before updating a machine to, e.\,g., install the latest MikTeX updates where downgrading may be complicated.\footnote{That's another issue to address … but a different story.}
 
 Additionally, you can also use it to check backwards compatibility, e.\,g., if one collaborator is using a Debian Stable which is stuck on some outdated version.
-As mentioned the \LaTeX{} Project Team is already using this techniques and even provides functionality for regression testing within their build system \enquote{l3build} \cite{l3build}.
+As mentioned the \LaTeX{} Project Team is already using these techniques and even provides functionality for regression testing within their build system \enquote{l3build} \cite{l3build}.
 
 Using this as a package developer enables a general interface to be used for regression testing.
-This allows to avoid some of the bugs which otherwhise would be published and should be found by a user.
-Also it can be used to avoid inconsitent structures, e.\,g., one of the authors recently found that tons of packages and files within \TeXLive{} don't have a proper version number set within the code.
+This allows to avoid some of the bugs which otherwise would be published and should be found by a user.
+Also it can be used to avoid inconsistent structures, e.\,g., one of the authors recently found that tons of packages and files within \TeXLive{} don't have a proper version number set within the code.
 
 \section{Structure of this tutorial}
 
@@ -165,7 +165,7 @@ This tutorial mainly addresses two groups of users:
 \end{enumerate}
 
 The second group obviously can also  use workflows of the first, e.\,g., for typesetting documentation.
-So developers usually use an extended version of the the setup provided for the authors.
+So developers usually use an extended version of the setup provided for the authors.
 
 As all platforms covered by this article are related to the git version control system, we expect the project to be some kind of git repository.
 In case the reader does not yet use git, there is a little bit of information attached to this tutorial.
@@ -181,7 +181,7 @@ It is planned to have some extended version of this article where instructions a
 
 \subsection{First steps with GitHub Actions}
 
-To get started, we need a git repository somehow hosted GitHub.
+To get started, we need a git repository somehow hosted on GitHub.
 You may also use a private one.
 
 Thinking of the tasks needed to compile a LaTeX document in any “blank slate” environment, we have to do the following:
@@ -196,7 +196,7 @@ This  is starting another container inside the action container to run \command{
 But those actions usually limit the configuration options to simplify the interface.
 We are going to elaborate on both variants.
 
-The configuration for an action is done by creating a yaml file within the repositories subdirectory \file{.github/workflows/hellow-world.yml}.
+The configuration for an action is done by creating a yaml file within the repositories' subdirectory \file{.github/workflows/hellow-world.yml}.
 The name may be chosen individually.
 The following code snippet shows a minimal configuration:
 
@@ -231,7 +231,7 @@ This example is only creating some output and should therefore run without any i
 
 On GitHub, actions are automatically enabled for new repositories.
 When combined with an available runner like we do, it's enough to add a yaml configuration file to the repository to see the effect.
-After pushing that configuration, the pipelie will start running on all subsequent pushes.
+After pushing that configuration, the pipeline will start running on all subsequent pushes.
 
 The current status of an action, i.e., what step it is currently running or if it already finished, can always be checked having a look at
 \url*{<repo url>/actions} e.g. for for first of our demo repositories, this can be found at
@@ -245,7 +245,7 @@ Hence, we can move on to the next step: building a \LaTeX{} document.
 \subsubsection{Actually using \LaTeX}
 
 Actions are fundamentally based on running isolated containers of software using docker.
-Luckily, some of the us live on the Island of TeX and maintain images we could make use of here.\footnote{Special thanks to the other islanders at that point!}
+Luckily, some of us live on the Island of TeX and maintain images we could make use of here.\footnote{Special thanks to the other islanders at that point!}
 The setup of the images was described within \cite{islandoftex-docker-gitlab}.
 % TODO: use https://www.tug.org/TUGboat/tb40-3/tb126island-docker.pdf for the description
 
@@ -263,7 +263,7 @@ It received a name, which is helpful to simplify debugging as GitHub will tell u
 
 \item[uses:] is a reference to another action and GitHub's way to reference pre-configured pipelines encapsulating more complex tasks.
 So \action{checkout@v4} refers to a separate repository \cite{github-action-checkout}.
-This action takes care of the authentication and some interals, so we don't have to deal with details.
+This action takes care of the authentication and some internals, so we don't have to deal with details.
 
 The important part is that only after this action, the following steps start being executed within the root directory of our repository.
 
@@ -273,7 +273,7 @@ So we don't even have to depend on the file name as long as we store files to be
 \end{description}
 
 \subsubsection{Where's the PDF?}
-If the pipeline succeeds, there will be a green checkmark but we will fail to find the PDF somewhere.
+If the pipeline succeeds, there will be a green checkmark, but we will fail to find the PDF somewhere.
 This is because GitHub does not know which (output) files the user actually wants to see or download.
 Such files are called \enquote{artifacts}, so now we will adjust the action to keep the PDF and upload it to GitHub as an artifact.
 
@@ -284,17 +284,17 @@ Clicking on the run on the actions overview page leads there:
 
 <include image of the artifact>
 
-Sadly GitHub is currently does not provide an option for individual files without a zip.
+Sadly GitHub currently does not provide an option for individual files without a zip.
 Also it's not possible to have a static link pointing to the latest artifacts.
-Other plattforms like GitLab do provide that feature by default.
-To resolve and make the \acro{PDF} easier to access on GitHub it's required to use additional actions.
+Other platforms like GitLab do provide that feature by default.
+To resolve this and make the \acro{PDF} easier to access on GitHub it's required to use additional actions.
 The most common way to do it is publishing the pdf an orphan branch.
 Usually this mechanism is used to create web pages and is called github-pages.
 
 <insert listing>
 
 \subsection{Differences to Forgejo Actions}
-Forgejo\cite{forgejo} is another code plattform which has the aim to be more open than GitHub.
+Forgejo\cite{forgejo} is another code platform which has the aim to be more open than GitHub.
 It can be self-hosted and now provides mechanism similar got GitHub actions.
 
 They will never completely do the same as GitHub does, but they are almost compatible.
@@ -332,9 +332,9 @@ Using the example config on one of the demo projects would make it
 \section{Testing with multiple versions or compilers}
 
 We promised one can extend these setups to test using multiple TeX versions or engines.
-Different engines are actually sraightforward to include by running additional steps with different commands.
+Different engines are actually straightforward to include by running additional steps with different commands.
 Of course, it's alternatively possible to use those in separate actions or even workflow files.
-There is no general way to strucure those as it always depends on whether to always run everything or save resources by conditional or sequential execution.
+There is no general way to structure those as it always depends on whether to always run everything or save resources by conditional or sequential execution.
 
 To use different versions of \TeXLive{}, the Island of TeX provides historic images of all but the latest TeX Live release (which isn't historic yet anyway).
 
@@ -377,7 +377,7 @@ Here the variable is more like a bash variable but can be used the same way.
 The previous examples used a full TeX Live installation to have the most convenient setup.\footnote{Almost, the images we used neither include the documentation nor the source tree of TeX Live.}
 The IoT images even ship all dependencies of additional tools like arara or minted so that all tools in TeX Live will work out of the box.
 
-Still, sometimes you will not need all the bells and whistles and thre are advantages to smaller build containers.
+Still, sometimes you will not need all the bells and whistles and there are advantages to smaller build containers.
 For instance, downloading more than one gigabyte can take quite some time long.
 Or you may only have limited disk space available on the runner server.
 
@@ -418,7 +418,7 @@ The \directive{package_file:} is the path to the DEPP-output or some manually cr
  The DEPP repository is luckily providing a shell script to install a TeX Live based on the package file.
  This can be used in the pipelines to modify the container.
  Another option would be to provide a container image which already contains the necessary packages.
- If a self hosted runner is used, this usually is the best option as caching can be configured to control when the container is rebuilt or updated.
+ If a self-hosted runner is used, this usually is the best option as caching can be configured to control when the container is rebuilt or updated.
 
 \section{Pipelines for package developers}
 
@@ -432,7 +432,7 @@ The \command{latex} command, or \command{latexmk} in the examples, will be repla
   run: l3build check --show-log-on-error -q -H
 \end{minted}
 
-This will automatically run all testfiles according to the \command{l3build} setup.
+This will automatically run all test files according to the \command{l3build} setup.
 As this is within the context of running a package's test suite, the artifacts are totally different.
 We're not really interested in a \acro{PDF} but the test output.
 One of the authors created another action to take care of this:
