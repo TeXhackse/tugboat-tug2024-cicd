@@ -244,7 +244,7 @@ The current status of an action, i.e., what step it is currently running or if i
 \meta{repository url}\url{/actions} e.\,g. for the first of our demo repositories, this can be found at
 {\DeclareFieldFormat{citeurlpostfix}{\url{#1/actions}}\citefield{workflow-github}[citeurlpostfix]{url}}.
 
-\noindent\includegraphics[width=\linewidth]{screenshot-pipeline-successful}
+\noindent\includegraphics[width=\linewidth,alt={Cropping of a Screenshot from the GitHub Actions status page of a repository. The run was successful. The commit was von bei @TeXhackse and the commit message says  “Initial setup” followed by a lion emojy.}]{screenshot-pipeline-successful}
 
 The pipeline ran successfully but did not do anything but create some shell output.
 Hence, we can move on to the next step: building a \LaTeX{} document.
@@ -253,7 +253,7 @@ Hence, we can move on to the next step: building a \LaTeX{} document.
 
 Actions are fundamentally based on running isolated containers of software using docker.
 Luckily, some of us live on the Island of \TeX{} and maintain images we could make use of here.\footnote{Special thanks to the other islanders at that point!}
-The setup of the images was described within \cite{slandoftex-docker-short}.
+The setup of the images was described within \cite{islandoftex-docker-short}.
 
 The first part of the workflow will stay the same for the moment.
 Changes only apply after `runs-on`:
@@ -288,7 +288,7 @@ Such files are called \enquote{artifacts}, so now we will adjust the action to k
 After another (successful) run of the pipeline it's possible to access the \acro{PDF} wrapped within a  \file{*.zip} at the run's status page.
 Clicking on the run on the actions overview page leads there:
 
-\noindent\includegraphics[width=\linewidth]{screenshot-artifacts}
+\noindent\includegraphics[width=\linewidth,alt={Cropping of a screenshot. It shows the GitHub artifacts download section. A Packaged artifact called “Documentation” is available.}]{screenshot-artifacts}
 
 Sadly GitHub currently does not provide an option for individual files without a zip.
 Also it's not possible to have a static link pointing to the latest artifacts.
