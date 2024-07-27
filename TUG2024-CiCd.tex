@@ -86,7 +86,8 @@ not a strict requirement.}
 	\TeX\,Live
 }
 
-\newcommand*{\TeXLive}{\acro{\TeX\,Live}}
+\usepackage{xspace}
+\newcommand*{\TeXLive}{\acro{\TeX\,Live}\xspace}
 
 
 
@@ -116,7 +117,7 @@ not a strict requirement.}
 \sbox0{\tiny00}%
 \setlength\mintednumbersep{1em}%
 \addtolength\mintednumbersep{-\wd0}%
-\setminted{xleftmargin=1em,numbersep=\mintednumbersep,numbers=left}
+\setminted{xleftmargin=1em,numbersep=\mintednumbersep,numbers=left,breakaftersymbolpre={}}
 
 \maketitle
 
@@ -125,25 +126,25 @@ Everything went into or is moving towards the cloud.
 But there also is a third variant to compile documents which can be used also to improve package development and in general the stability of \LaTeX:
 adapting DevOps methods, like continuous integration and delivery (\acro{CI/CD}) using automated workflows.
 
-As a very rough working definition, let us consider a \acro{CI/CD} workflow as a number of steps to compile a TeX document to \acro{PDF} on some kind of online service that has access to the source files.
+As a very rough working definition, let us consider a \acro{CI/CD} workflow as a number of steps to compile a\TeX{} document to \acro{PDF} on some kind of online service that has access to the source files.
 
 \section{Why continuous integration?}
 Having an established workflow usually makes people avoid thinking about changing anything.
 So there have to be reasons why it might be worth reading this article or even integrating the mechanisms into projects.
 
-Early adopters of continuous integration techniques in the TeX ecosystems tried to follow the current state of OpenSource development and open a door for contributors in the development process.
+Early adopters of continuous integration techniques in the\TeX{} ecosystems tried to follow the current state of OpenSource development and open a door for contributors in the development process.
 For example, the \LaTeX{} Project is currently creating a lot of user interaction via their GitHub projects~\cite{latex3-github} and also takes contributions from which the whole \TeX/\LaTeX{} community will profit.
 
 But the advantages of these methods extend beyond that. We will focus on some cherry-picked aspects of that as the remainder could probably make an article by itself.
 
 \subsection{Works for me?!}
 Sometimes, I can successfully compile my document on my machine, but my supervisor can't on his.
-There are tons of reasons why a TeX compilation may succeed on one system and fail on another.
+There are tons of reasons why a\TeX{} compilation may succeed on one system and fail on another.
 Running some external continuous integration pipeline will not only illustrate the necessary steps to go from source to the full \acro{PDF}.
 It will also help understand if problems are machine specific issues or general ones.
 
 \subsection{Compatibility and regression testing}
-It's possible to run workflows on multiple TeX distributions or versions.
+It's possible to run workflows on multiple\TeX{} distributions or versions.
 This can be used to test if there are any issues with some package update before updating a machine to, e.\,g., install the latest MikTeX updates where downgrading may be complicated.\footnote{That's another issue to address … but a different story.}
 
 Additionally, you can also use it to check backwards compatibility, e.\,g., if one collaborator is using a Debian Stable which is stuck on some outdated version.
@@ -245,7 +246,7 @@ Hence, we can move on to the next step: building a \LaTeX{} document.
 \subsubsection{Actually using \LaTeX}
 
 Actions are fundamentally based on running isolated containers of software using docker.
-Luckily, some of us live on the Island of TeX and maintain images we could make use of here.\footnote{Special thanks to the other islanders at that point!}
+Luckily, some of us live on the Island of \TeX{} and maintain images we could make use of here.\footnote{Special thanks to the other islanders at that point!}
 The setup of the images was described within \cite{islandoftex-docker-gitlab}.
 % TODO: use https://www.tug.org/TUGboat/tb40-3/tb126island-docker.pdf for the description
 
@@ -256,7 +257,7 @@ Changes only apply after `runs-on`:
 
 
 \begin{description}
-\item[container:] Choosing the IoT \containerimage{texlive-latest} image which provides a full TeX Live + some tools\cite{islandoftex-docker}.
+\item[container:] Choosing the IoT \containerimage{texlive-latest} image which provides a full \TeXLive + some tools\cite{islandoftex-docker}.
 \item[steps:]
 The first step looks different from the one, we had before.
 It received a name, which is helpful to simplify debugging as GitHub will tell us which step failed.
@@ -333,14 +334,14 @@ Using the example config on one of the demo projects would make it
 
 \section{Testing with multiple versions or compilers}
 
-We promised one can extend these setups to test using multiple TeX versions or engines.
+We promised one can extend these setups to test using multiple \TeX{} versions or engines.
 Different engines are actually straightforward to include by running additional steps with different commands.
 Of course, it's alternatively possible to use those in separate actions or even workflow files.
 There is no general way to structure those as it always depends on whether to always run everything or save resources by conditional or sequential execution.
 
-To use different versions of \TeXLive{}, the Island of TeX provides historic images of all but the latest TeX Live release (which isn't historic yet anyway).
+To use different versions of \TeXLive{}, the Island of \TeX{} provides historic images of all but the latest \TeXLive release (which isn't historic yet anyway).
 
-\begin{minted}[escapeinside=||,breaklines,breakafter=/]{yaml}
+\begin{minted}[escapeinside=||,breaklines,breakafter=/:]{yaml}
 test-on-IoT-texlive:
   runs-on: ubuntu-22.04
   strategy:
@@ -360,7 +361,7 @@ A full list of the provided images can be found at \cite{islandoftex-docker-gitl
 \end{description}
 
 Similarly, on GitLab there is also a matrix feature.
-The following example even illustrates how to run multiple engines each on multiple TeX Live releases:
+The following example even illustrates how to run multiple engines each on multiple \TeXLive releases:
 
 \begin{minted}[escapeinside=||,breaklines,breakafter=/]{yaml}
 check:
@@ -376,8 +377,8 @@ Here the variable is more like a bash variable but can be used the same way.
 
 
 \section{Minimize the build container}
-The previous examples used a full TeX Live installation to have the most convenient setup.\footnote{Almost, the images we used neither include the documentation nor the source tree of TeX Live.}
-The IoT images even ship all dependencies of additional tools like arara or minted so that all tools in TeX Live will work out of the box.
+The previous examples used a full \TeXLive installation to have the most convenient setup.\footnote{Almost, the images we used neither include the documentation nor the source tree of \TeXLive.}
+The IoT images even ship all dependencies of additional tools like arara or minted so that all tools in \TeXLive will work out of the box.
 
 Still, sometimes you will not need all the bells and whistles and there are advantages to smaller build containers.
 For instance, downloading more than one gigabyte can take quite some time long.
@@ -387,13 +388,13 @@ Side remark: If you are not looking to reduce the images themselves but the comp
 
 Back to minimizing the build environment: the most annoying part here might be to find out which packages are actually needed to compile…
 
-So the Island of TeX proudly presents: DEPP – The DEPendency Printer for \TeXLive\cite{depp}.\footnote{If you are German, do not be surprised if this tool is cleverer than its name suggests.}
+So the Island of\TeX{} proudly presents: DEPP – The DEPendency Printer for \TeXLive\cite{depp}.\footnote{If you are German, do not be surprised if this tool is cleverer than its name suggests.}
 
-As this article should focus on pipelines we won't go into detail on the tool itself but instead show how DEPP produces a file listing all TeX Live packages necessary for the build.
+As this article should focus on pipelines we won't go into detail on the tool itself but instead show how DEPP produces a file listing all \TeXLive packages necessary for the build.
 For the example projects these look like:
 
-\begin{minted}[breaklines,escapeinside=||,linenos=false]{text}
-#Proudly generated by the Island of TeX's |[…]|
+\begin{minted}[breaklines,linenos=false,xleftmargin=0pt,escapeinside=||]{text}
+#Proudly generated by the Island of TeX's …
 blindtext
 cm
 |…|
@@ -401,14 +402,14 @@ cm
 
 \subsection{GitHub}
 
-On GitHub there are two actions installing TeX Live as a part of the workflow.
+On GitHub there are two actions installing \TeXLive as a part of the workflow.
 Using those it's possible to minimize the container and this will also reduce the build time.
 
 \begin{minted}{yaml}
 - name: Install TeX Live
-        uses: zauguin/install-texlive@v3
-        with:
-          package_file: .github/tl_packages
+    uses: zauguin/install-texlive@v3
+    with:
+      package_file: .github/tl_packages
 \end{minted}
 
 This snippet can be used within \directive{steps:} and makes the \directive{container:} directive to be obsolete, so it should be removed.
@@ -417,7 +418,7 @@ The \directive{package_file:} is the path to the DEPP-output or some manually cr
  \subsection{GitLab}
 
  On GitLab the simplified syntax makes this a bit more complex.
- The DEPP repository is luckily providing a shell script to install a TeX Live based on the package file.
+ The DEPP repository is luckily providing a shell script to install a \TeXLive based on the package file.
  This can be used in the pipelines to modify the container.
  Another option would be to provide a container image which already contains the necessary packages.
  If a self-hosted runner is used, this usually is the best option as caching can be configured to control when the container is rebuilt or updated.
@@ -452,6 +453,8 @@ Apart from uploading the artifacts, this configuration illustrates another impor
 In contrast to the \acro{PDF} of a document, where we are only interested in the success output, we are less interested in success than failure output for test suites.
 To let GitHub know that we actually are interested in these artifacts, \mintinline{yaml}|if: ${{ always() }}| has been added.
 This will force the step to run also if the step before failed.
+
+
 
 
 %\printbibliography
