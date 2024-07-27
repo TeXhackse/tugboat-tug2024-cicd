@@ -298,7 +298,34 @@ To resolve this and make the \acro{PDF} easier to access on GitHub it's required
 The most common way to do it is publishing the \acro{PDF} to an orphan branch.
 Usually this mechanism is used to create web pages and is called github-pages.
 
-<insert listing>
+To be able to write in the repository it's necessary to adjust the permissions.
+GitHub is providing an interface within the yaml configuration:
+
+
+\begin{minted}{yaml}
+permissions:
+  contents: write
+\end{minted}
+
+This has to be added to the job which should upload the pdf.
+Additionally most actions which can be used for uploading artifacts to separate branches request a directory instead of a file.
+So all files have to be moved to a separate directory to be used with these actions.
+
+\begin{minted}{yaml}
+- name: move pdf
+   run: mkdir -p build && mv *.pdf build/.
+- uses: crazy-max/ghaction-github-pages@v4
+  with:
+    target_branch: pdf-output
+    build_dir: build
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+\end{minted}
+
+The GitHub token also is necessary to be used for the authentication.
+Otherwhise the run might be successfull but no PDF will appear on the branch.
+%During the preparation of the workshow and this article we've been testing a lot of the uploading actions.
+%Actually all somehow do the same, there are just differences in how to configure.
 
 \subsection{Differences to Forgejo Actions}
 Forgejo\cite{forgejo} is another code platform which has the aim to be more open than GitHub.
