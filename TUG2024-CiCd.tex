@@ -216,6 +216,10 @@ This is important if a project contains multiple workflows.
 \item[on:] This directive indicates conditions under which the workflow will be started.
 In this configuration, the jobs will be started on any push, i.\,e., whenever the repository on the server receives an update.
 
+Besides attaching the trigger to some user action it's possible use time based settings.
+For all options it's worth to have a look at the configuration manual \cite{github-actions-ref}.
+The default settings differ for all platforms, but even may be specific for a single instance.
+
 \item[jobs] contains a list of jobs to be run one after another.
 For example, it's quite common to have one job for compiling a document and another one to make the \acro{PDF} available.
 In this example, there is only one job called \enquote{action-test}.
