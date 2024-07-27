@@ -227,8 +227,8 @@ In this example, there is only one job called \enquote{action-test}.
 \item[runs-on:] This value corresponds to a runner setup.
 Runners are the machines to actually execute the jobs defined in a workflow.
 It doesn't have to be the same server as the one where the repository is hosted.
-In this example, \enquote{ubuntu-latest} indicates running on one of the provided runners by GitHub which is based on ubuntu.
-It includes nodejs and some tooling to simplify the work using predefined actions.
+In this example, \enquote{ubuntu-latest} indicates running on one of the provided runners by GitHub which is based on Ubuntu.
+It includes NodeJS and some tooling to simplify the work using predefined actions.
 A full list of the readily available runners and detailed description of the images can be found at \cite{github-hosted-runners}.
 
 \item[steps:] This is what the workflow should actually do.
@@ -241,7 +241,7 @@ When combined with an available runner like we do, it's enough to add a yaml con
 After pushing that configuration, the pipeline will start running on all subsequent pushes.
 
 The current status of an action, i.e., what step it is currently running or if it already finished, can always be checked having a look at
-\url*{<repo url>/actions} e.g. for for first of our demo repositories, this can be found at
+\url*{<repo url>/actions} e.g. for first of our demo repositories, this can be found at
 \citefield{workflow-github}{url}/actions.%TODO url - needs expansion
 
 \noindent\includegraphics[width=\linewidth]{screenshot-pipeline-successful}
