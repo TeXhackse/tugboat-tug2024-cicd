@@ -419,10 +419,10 @@ Using the example config on one of the demo projects makes it:
 
 We promised one can extend these setups to test using multiple \TeX{} versions or engines.
 Different engines are actually straightforward to include by running additional steps with different commands.
-Of course, it's alternatively possible to use those in separate actions or even workflow files.
+Of course, it is alternatively possible to use those in separate actions or even workflow files.
 There is no general way to structure those as it always depends on whether to always run everything or save resources by conditional or sequential execution.
 
-To use different versions of \TeXLive{}, the Island of \TeX{} provides historic images of all but the latest \TeXLive release (which isn't historic yet anyway).
+To use different versions of \TeXLive{}, the Island of \TeX{} provides historic images of all but the latest \TeXLive release (which is not historic yet anyway).
 
 \begin{tugboatlisting}[escapeinside=||,breaklines,breakafter=/:]{yaml}
 test-on-IoT-texlive:
@@ -462,8 +462,8 @@ Here the variable is more like a bash variable but can be used the same way.
 
 \section{Minimize the build container}
 \label{sec:minimize}\setListingIcon{}
-The previous examples used a full \TeXLive installation to have the most convenient setup.\footnote{Almost, the images we used neither include the documentation nor the source tree of \TeXLive.}
-The IoT images even ship all dependencies of additional tools like arara or minted so that all tools in \TeXLive will work out of the box.
+The previous examples used a full \TeXLive installation to have the most convenient setup.\footnote{Almost: the images we used neither include the documentation nor the source tree of \TeXLive.}
+The IoT images even ship all dependencies of additional tools such as arara or minted, which enables that all tools in \TeXLive will work out of the box.
 
 Still, sometimes you will not need all the bells and whistles and there are advantages to smaller build containers.
 For instance, downloading more than one gigabyte can take quite some time long.
@@ -473,7 +473,7 @@ Side remark: If you are not looking to reduce the images themselves but the comp
 
 Back to minimizing the build environment: the most annoying part here might be to find out which packages are actually needed to compile…
 
-So the Island of \TeX{} proudly presents: \DEPP – The DEPendency Printer for \TeXLive\cite{depp}.\footnote{If you are German, do not be surprised if this tool is cleverer than its name suggests.}
+So the Island of \TeX{} proudly presents: \DEPP – The DEPendency Printer for \TeXLive\cite{depp}.\footnote{If you are German, do not be surprised if this tool is more clever than its name suggests.}
 
 As this article should focus on pipelines we won't go into detail on the tool itself but instead show how \DEPP produces a file listing all \TeXLive packages necessary for the build.
 For the example projects these look like:
@@ -487,8 +487,8 @@ cm
 
 \subsection{GitHub}
 
-On GitHub there are two actions installing \TeXLive as a part of the workflow.
-Using those it's possible to minimize the container and this will also reduce the build time.
+On GitHub there are multiple actions installing \TeXLive as a part of the workflow~\cite{marcel-latex-action,teatimeguest-latex-action}.
+Using those, it is possible to minimize the container and this will also reduce the build time.
 
 \setListingIcon{\GitHub}
 \begin{tugboatlisting}{yaml}
@@ -499,11 +499,11 @@ Using those it's possible to minimize the container and this will also reduce th
 \end{tugboatlisting}
 
 This snippet can be used within \directive{steps:} and makes the \directive{container:} directive to be obsolete, so it should be removed.
-The \directive{package_file:} is the path to the \DEPP-output or some manually created list of packages.
+The \directive{package_file:} is the path to the \DEPP output or some manually created list of packages.
 
  \subsection{GitLab}
 
-On GitLab the simplified syntax makes this a bit more complex.
+On GitLab the simplified syntax makes running a minimized \TeXLive{} a bit more complex.
 The \DEPP repository\cite{depp} is luckily providing a shell script to install a \TeXLive based on the package file.
 This can be used in the pipelines to modify the container.
 Another option would be to provide a container image which already contains the necessary packages.
@@ -515,7 +515,7 @@ As promised, the advantages of using automated pipelines are even more significa
 In this case, we expect the repository to contain a package and some kind of \command{l3build} configuration.\footnote{Of course, the setup itself also works for other tools, but that is out of scope for this article.}
 
 \subsection{GitHub}\setListingIcon{\GitHub}
-The \command{latex} command, or \command{latexmk} in the examples, will be replaced by
+The \command{latex} step (calling \command{latexmk} in the examples) is replaced by
 
 \begin{tugboatlisting}[breaklines]{yaml}
 - name: Run l3build
@@ -524,8 +524,8 @@ The \command{latex} command, or \command{latexmk} in the examples, will be repla
 
 This will automatically run all test files according to the \command{l3build} setup.
 As this is within the context of running a package's test suite, the artifacts are totally different.
-We're not really interested in a \acro{PDF} but the test output.
-One of the authors created another action to take care of this:
+We are not really interested in a \acro{PDF} but the test output.
+One of the authors created another action to take care of this~\cite{marcel-l3build-failure}:
 
 \begin{tugboatlisting}{yaml}
 - name: Archive failed test output
@@ -536,7 +536,7 @@ One of the authors created another action to take care of this:
     retention-days: 3
 \end{tugboatlisting}
 
-Apart from uploading the artifacts, this configuration illustrates another important point.
+Apart from uploading the artifacts, this configuration illustrates another important point:
 In contrast to the \acro{PDF} of a document, where we are only interested in the success output, we are less interested in success than failure output for test suites.
 To let GitHub know that we actually are interested in these artifacts, \mintinline{yaml}|if: ${{ always() }}| has been added.
 This will force the step to run also if the previous step failed.
@@ -544,7 +544,7 @@ This will force the step to run also if the previous step failed.
 \subsection{GitLab}
 \setListingIcon{\GitLab}
 
-Again GitLab directly supports this without loading external extensions.
+Again, GitLab directly supports the artifact upload without loading external extensions.
 
 \begin{tugboatlisting}{yaml}
   - l3build check --show-log-on-error -q -H
@@ -555,7 +555,7 @@ artifacts:
 \end{tugboatlisting}
 
 This simplifies the standard setup but is less flexible.
-So for example if you want to use different artifacts for success than failure, it's required to do that within two separate jobs within GitLab.
+For example if you want to use different artifacts for success and failure, it is required to do that within two separate jobs within GitLab.
 
 
 \section{Running locally}
@@ -567,7 +567,7 @@ These setups usually use Docker.
 For the platforms which use actions there is a tool called \enquote{act} to simplify that process using the Docker API.
 %Forgejo is extending this tool and using it for their runners\cite{forgejo-runner}.
 
-Gitlab is extending this by the option to simply have a gitlab runner installed locally.
+GitLab is extending this by the option to simply have a GitLab runner installed locally.
 This provides the option of running
 
 \begin{tugboatlisting}[linenos=false,xleftmargin=0pt]{shell}
@@ -582,21 +582,21 @@ gitlab-runner exec
 \section{Continuous Development}
 
 Of course every configuration shown here is only an example and can be extended depending on the project's requirements.
-It's possible to run arbitrary commands, especially for complex setups this might be necessary.
+It is possible to run arbitrary commands, which might be necessary especially for complex setups.
 
-For example when creating magazines it's possible to continuously create print and online version, excerpts of single articles as well as  HTML/EPUB  output, while the editors only have to wait for the compilation of the article they actually are working on.
+For example, when creating magazines, it is possible to continuously create a print and an online version, excerpts of single articles as well as HTML/EPUB output, while the editors only have to wait for the compilation of the article they actually are working on.
 
 The same goes for study material where we have rendered version including solutions and some without or documents which share a lot of links between each other and therefore require a lot of runs.
 
 Integrating these structures into more advanced git usage like a useful branching concept can also help to improve collaboration or simplify the contribution process within OpenSource projects.
-It will reduce frustration for maintainers as some issues don't have to be checked manually.
-
-…
+It will reduce frustration for maintainers as some issues do not have to be checked manually.
 
 \section{Conclusion and Outlook}
 
-We explained the use of GitHub, Forgejo, and GitLab for compiling documents, templates, and packages.
-The explanations within the GitHub section are more detailed than the others.
+We explained the use of GitHub, Forgejo, and GitLab for compiling \LaTeX{} documents and packages.
+We showed how different releases of \TeXLive{} and even different \LaTeX{} compilers can be used.
+It was also shown how resulting artifacts (PDF flies and test resutls) can be made available automatically.
+The explanations within the GitHub section were more detailed than the others.
 It is planned to have some extended version of this article where instructions are only focusing on the specific platform.
 
 \begin{table*}
