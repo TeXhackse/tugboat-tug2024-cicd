@@ -460,6 +460,11 @@ Similarly, on GitLab there is also a matrix feature.
 The following example even illustrates how to run multiple engines each on multiple \TeXLive releases:
 \setListingIcon{\GitLab}
 
+% This is https://gitlab.com/islandoftex/texmf/tug2024-workflow-document-gitlab/-/blob/main/.gitlab-ci.yml?ref_type=heads
+% | Listing line | real line |
+% | 1, 2         | 1, 2  |
+% | 3            | 3 - 7 |
+% | 4-           | 8-11    |
 \begin{tugboatlisting}[escapeinside=||,breaklines,breakafter=/]{yaml}
 check:
   image: registry.gitlab.com/islandoftex/images/texlive:$TEXLIVE_VERSION
