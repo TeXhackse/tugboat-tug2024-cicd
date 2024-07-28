@@ -351,6 +351,8 @@ Usually this mechanism is used to create web pages and is called github-pages.
 To be able to write in the repository it's necessary to adjust the permissions.
 GitHub is providing an interface within the yaml configuration:
 
+% We do not have a public source for that - we should remove the line numbers?
+% However, this gets added via https://github.com/islandoftex/tug2024-workflow-document-github/pull/1
 \begin{tugboatlisting}{yaml}
 permissions:
   contents: write
@@ -360,6 +362,8 @@ This has to be added to the job which should upload the pdf.
 Additionally most actions which can be used for uploading artifacts to separate branches request a directory instead of a file.
 So all files have to be moved to a separate directory to be used with these actions.
 
+% This gets added via https://github.com/islandoftex/tug2024-workflow-document-github/pull/1
+% (However, the code below is a simplified version)
 \begin{tugboatlisting}[breaklines]{yaml}
 - name: move pdf
    run: mkdir -p build && mv *.pdf build/.
