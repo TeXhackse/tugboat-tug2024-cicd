@@ -29,6 +29,7 @@ not a strict requirement.}
 \usepackage{graphicx}
 \usepackage[hidelinks,pdfa]{hyperref}
 \usepackage[autostyle]{csquotes}
+\usepackage{ragged2e}
 
 
 \usepackage[bibstyle=tugboat]{biblatex}
@@ -366,12 +367,16 @@ Here the steps only are a list of commands run after each other. Currently the l
 As mentioned before GitLab is providing an API which allows to create static links to the artifacts.
 So the \file{README.md} of the demo repositories there include a link of the following structure:
 
-<Link to GitLab Repo>/-/jobs/artifacts/<branch>/browse?job=<name of the job>
+\begin{FlushLeft}
+\meta{Repository URL}\url{/-/jobs/artifacts/}\meta{branch}\allowbreak\url{/browse?job=}\meta{name of the job}
+\end{FlushLeft}
 
 this will list all artifacts attached to the job.
 Using the example config on one of the demo projects would make it
 
-\citefield{workflow-document-gitlab}{url}/-/jobs/artifacts/main/browse?job=run-LaTeX
+\begin{FlushLeft}
+{\DeclareFieldFormat{citeurlpostfix}{\url{#1/-/jobs/artifacts/main/browse?job=run-LaTeX}}\citefield{workflow-document-gitlab}[citeurlpostfix]{url}}
+\end{FlushLeft}
 
 \section{Testing with multiple versions or compilers}
 
