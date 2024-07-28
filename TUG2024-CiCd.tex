@@ -39,7 +39,7 @@ not a strict requirement.}
 \usepackage{booktabs}
 %%% Start of metadata %%%
 
-\title[TUG2024: LaTeX CI/CD]{Tutorial:\newline Creation of \LaTeX\ documents using a cloud-based pipeline}
+\title{Creation of \LaTeX{} documents using a cloud-based pipeline}
 \date{2024-07-19}
 
 % repeat info for each author; comment out items that don't apply.
@@ -168,6 +168,15 @@ not a strict requirement.}
 
 
 \maketitle
+
+
+\begin{abstract}
+Collaboration for editing \LaTeX{} documents using web-based platforms is common these days.
+These tools focus on writing documents and not on creation of templates or packages.
+Using build servers with automated pipelines is common within software development but can easily be adapted for \TeX{} \& Friends.
+
+This article will show how to get started using automated workflows on platforms like GitHub, GitLab or Forgejo for document authors as well as \TeX{} developers.
+\end{abstract}
 
 Everything went into or is moving towards the cloud.
 \LaTeX{} is already there for about 10 years and today it's quite common to use a web editor for collaboration and local compilation became the \enquote{nerdy} way.
@@ -616,7 +625,7 @@ gitlab-runner exec
 %It's possible to configure the pipelines to run directly on the machine instead of using docker containers.
 
 
-\section{Continuous Development}
+\section{This is Continuous Development}
 
 Of course every configuration shown here is only an example and can be extended depending on the project's requirements.
 It is possible to run arbitrary commands, which might be necessary especially for complex setups.
@@ -628,13 +637,23 @@ The same goes for study material where we have rendered version including soluti
 Integrating these structures into more advanced git usage like a useful branching concept can also help to improve collaboration or simplify the contribution process within OpenSource projects.
 It will reduce frustration for maintainers as some issues do not have to be checked manually.
 
-\section{Conclusion and Outlook}
+\section{Conclusion and Call for Action \& Feedback}
+We explained the use of GitHub and GitLab for compiling \LaTeX{} documents and packages.
+We showed how different releases of \TeXLive{} and even different compilers can be used to simplify testing across platforms.
+Also we  took care of being able to access the PDF or the testing results in some way.
 
-We explained the use of GitHub, Forgejo, and GitLab for compiling \LaTeX{} documents and packages.
-We showed how different releases of \TeXLive{} and even different \LaTeX{} compilers can be used.
-It was also shown how resulting artifacts (PDF flies and test resutls) can be made available automatically.
-The explanations within the GitHub section were more detailed than the others.
-It is planned to have some extended version of this article where instructions are only focusing on the specific platform.
+To increase the stability of all parts of \TeX{} development we hope this will help to more tested packages and even less waste of time while compiling complex setups.
+In case you maintain some package it would be great if you could now setup some test to check it against the latest version of \TeXLive  or even the current development status.
+This can also be a preparation for next years TeX Live pretest, as the Island of \TeX{} also is creating a Docker image for the pretests.
+In case you are planning to do that and face any issues, we will try to help.
+
+We would love to maintain this as a tutorial to simplify the use of automation for users of \TeX{} \& Friends.
+So if we left open questions, we would love to hear about it and will try to improve this tutorial as well as the examples.
+
+Contributions to this project are very welcome!
+
+
+
 
 \begin{table*}
 \caption{Template repositories published with this article. The naming scheme is structured as
