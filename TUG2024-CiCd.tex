@@ -150,13 +150,13 @@ For example, the \LaTeX{} Project is currently creating a lot of user interactio
 But the advantages of these methods extend beyond that. We will focus on some cherry-picked aspects of that as the remainder could probably make an article by itself.
 
 \subsection{Works for me?!}
-Sometimes, I can successfully compile my document on my machine, but my supervisor can't on his.
+Sometimes, one can successfully compile a document on ones machine, but the supervisor cannot compile on theirs.
 There are tons of reasons why a\TeX{} compilation may succeed on one system and fail on another.
 Running some external continuous integration pipeline will not only illustrate the necessary steps to go from source to the full \acro{PDF}.
 It will also help understand if problems are machine specific issues or general ones.
 
 \subsection{Compatibility and regression testing}
-It's possible to run workflows on multiple\TeX{} distributions or versions.
+It is possible to run workflows on multiple\TeX{} distributions or versions.
 This can be used to test if there are any issues with some package update before updating a machine to, e.\,g., install the latest MikTeX updates where downgrading may be complicated.\footnote{That's another issue to address … but a different story.}
 
 Additionally, you can also use it to check backwards compatibility, e.\,g., if one collaborator is using a Debian Stable which is stuck on some outdated version.
@@ -206,7 +206,7 @@ Thinking of the tasks needed to compile a LaTeX document in any “blank slate�
 %
 \noindent GitHub provides pre-configured actions which are able to combine multiple steps, e.\,g., the latex-action \cite{latex-action}.
 This  is starting another container inside the action container to run \command{latexmk}.
-But those actions usually limit the configuration options to simplify the interface.
+However, those actions usually limit the configuration options to simplify the interface.
 We are going to elaborate on both variants.
 
 The configuration for an action is done by creating a yaml file within the repositories' subdirectory \file{.github/workflows/hellow-world.yml}.
@@ -266,7 +266,7 @@ Luckily, some of us live on the Island of \TeX{} and maintain images we could ma
 The setup of the images was described within \cite{islandoftex-docker-short}.
 
 The first part of the workflow will stay the same for the moment.
-Changes only apply after `runs-on`:
+Changes only apply after \texttt{runs-on}:
 
 \inputminted[firstline=5, lastline=12,gobble=3]{yaml}{examples/latex-basic.yml}
 
