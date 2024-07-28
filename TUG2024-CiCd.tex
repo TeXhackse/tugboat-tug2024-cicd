@@ -232,7 +232,7 @@ It is planned to have some extended version of this article where instructions a
 \setListingIcon{\GitHub}
 
 To get started, we need a git repository somehow hosted on GitHub.
-It doesn't have to be a public one.
+It does not have to be a public one.
 
 Thinking of the tasks needed to compile a \LaTeX{} document in any “blank slate” environment, we have to do the following:
 
@@ -244,7 +244,7 @@ Thinking of the tasks needed to compile a \LaTeX{} document in any “blank slat
 \noindent GitHub provides pre-configured actions which are able to combine multiple steps, e.\,g., the latex-action \cite{latex-action}.
 This  is starting another container inside the action container to run \command{latexmk}.
 However, those actions usually limit the configuration options to simplify the interface.
-We are going to elaborate on two variants: Using a container image with a full \TeXLive (this section) and a minimal installation (see Section~\ref{sec:min}).
+We are going to elaborate on two variants: Using a container image with a full \TeXLive (this section) and a minimal installation (see Section~\ref{sec:minimize}).
 
 The configuration for an action is done by creating a yaml file within the repositories' subdirectory \file{.github/workflows/hellow-world.yml}.
 The name may be chosen individually.
@@ -263,44 +263,45 @@ This is important if a project contains multiple workflows.
 \item[on:] This directive indicates conditions under which the workflow will be started.
 In this configuration, the jobs will be started on any push, i.\,e., whenever the repository on the server receives an update.
 
-Besides attaching the trigger to some user action it's possible use time based settings.
-For all options it's worth to have a look at the configuration manual \cite{github-actions-ref}.
+Besides attaching the trigger to some user action it is possible use time-based settings.
+For all options it is worth to have a look at the configuration manual \cite{github-actions-ref}.
 The default settings differ for all platforms, but even may be specific for a single instance.
 
 \item[jobs] contains a list of jobs to be run one after another.
-For example, it's quite common to have one job for compiling a document and another one to make the \acro{PDF} available.
+For example, it is quite common to have one job for compiling a document and another one to make the \acro{PDF} available.
 In this example, there is only one job called \enquote{action-test}.
 
 \item[runs-on:] This value corresponds to a runner setup.
 Runners are the machines to actually execute the jobs defined in a workflow.
-It doesn't have to be the same server as the one where the repository is hosted.
+It does not have to be the same server as the one where the repository is hosted.
 In this example, \enquote{ubuntu-latest} indicates running on one of the provided runners by GitHub which is based on Ubuntu.
 It includes NodeJS and some tooling to simplify the work using predefined actions.
 A full list of the readily available runners and detailed description of the images can be found at \cite{github-hosted-runners}.
 
 \item[steps:] This is what the workflow should actually do.
-As one can see it's possible to directly enter bash code in there.
-This example is only creating some output and should therefore run without any issues.
+As one can see it is possible to directly enter bash code in there.
+This example is only creating some output and therefore should run without any issues.
 \end{description}
 
 On GitHub, actions are automatically enabled for new repositories.
-When combined with an available runner like we do, it's enough to add a yaml configuration file to the repository to see the effect.
+When combined with an available runner like we do, it is enough to add a yaml configuration file to the repository to see the effect.
 After pushing that configuration, the pipeline will start running on all subsequent pushes.
+% Be aware that for repository forks, actions need to be enabled explicitly in the tab \enquote{Actions}. % too specific
 
 The current status of an action, i.e., what step it is currently running or if it already finished, can always be checked having a look at
-\meta{repository url}\url{/actions} e.\,g. for the first of our demo repositories, this can be found at
+\meta{repository url}\url{/actions} e.\,g., for the first of our demo repositories, this can be found at
 {\DeclareFieldFormat{citeurlpostfix}{\url{#1/actions}}\citefield{workflow-github}[citeurlpostfix]{url}}.
 
-\noindent\includegraphics[width=\linewidth,alt={Cropping of a Screenshot from the GitHub Actions status page of a repository. The run was successful. The commit was von bei @TeXhackse and the commit message says  “Initial setup” followed by a lion emojy.}]{screenshot-pipeline-successful}
+\noindent\includegraphics[width=\linewidth,alt={Cropping of a Screenshot from the GitHub Actions status page of a repository. The run was successful. The commit was by @TeXhackse and the commit message says  “Initial setup” followed by a lion emojy.}]{screenshot-pipeline-successful}
 
 The pipeline ran successfully but did not do anything but create some shell output.
 Hence, we can move on to the next step: building a \LaTeX{} document.
 
 \subsubsection{Actually using \LaTeX}
 
-Actions are fundamentally based on running isolated containers of software using docker.
+Actions are fundamentally based on isolated containers of software, which are run using Docker.
 Luckily, some of us live on the Island of \TeX{} and maintain images we could make use of here.\footnote{Special thanks to the other islanders at that point!}
-The setup of the images was described within \cite{islandoftex-docker-short}.
+The setup of the images was described within~\cite{islandoftex-docker-short}.
 
 The first part of the workflow will stay the same for the moment.
 Changes only apply after \directive{runs-on}:
@@ -309,42 +310,42 @@ Changes only apply after \directive{runs-on}:
 
 
 \begin{description}
-\item[container:] Choosing the IoT \containerimage{texlive-latest} image which provides a full \TeXLive + some tools\cite{islandoftex-docker}.
+\item[container:] Choosing the IoT \containerimage{texlive-latest} image which provides a full \TeXLive{} + some tools\cite{islandoftex-docker}.
 \item[steps:]
 The first step looks different from the one, we had before.
 It received a name, which is helpful to simplify debugging as GitHub will tell us which step failed.
 
 \item[uses:] is a reference to another action and GitHub's way to reference pre-configured pipelines encapsulating more complex tasks.
-So \action{checkout@v4} refers to a separate repository \cite{github-action-checkout}.
-This action takes care of the authentication and some internals, so we don't have to deal with details.
+In the example, \action{checkout@v4} refers to a separate repository\cite{github-action-checkout}.
+This action takes care of the authentication and some internals, so we do not have to deal with details.
 
 The important part is that only after this action, the following steps start being executed within the root directory of our repository.
 
-The second step is kind of the same as in the first example, but this time we run \command{latexmk}\cite{latexmk} using \command{lualatex}.
+The second step is kind of the same as in the first example, but this time we run \command{latexmk}~\cite{latexmk} using \command{lualatex}.
 By default, this will run on all \file{*.tex} files within the root directory.
-So we don't even have to depend on the file name as long as we store files to be included within subdirectories.
+So we do not even have to depend on the file name as long as we store files to be included within subdirectories.
 \end{description}
 
-\subsubsection{Where's the PDF?}
+\subsubsection{Where is the PDF?}
 If the pipeline succeeds, there will be a green checkmark, but we will fail to find the PDF somewhere.
 This is because GitHub does not know which (output) files the user actually wants to see or download.
 Such files are called \enquote{artifacts}, so now we will adjust the action to keep the PDF and upload it to GitHub as an artifact.
 
 \inputminted[firstline=13, lastline=17,gobble=3]{yaml}{examples/latex-basic.yml}
 
-After another (successful) run of the pipeline it's possible to access the \acro{PDF} wrapped within a  \file{*.zip} at the run's status page.
+After another (successful) run of the pipeline, it is possible to access the \acro{PDF} wrapped within a \file{*.zip} at the run's status page.
 Clicking on the run on the actions overview page leads there:
 
 \noindent\includegraphics[width=\linewidth,alt={Cropping of a screenshot. It shows the GitHub artifacts download section. A Packaged artifact called “Documentation” is available.}]{screenshot-artifacts}
 
-Sadly GitHub currently does not provide an option for individual files without a zip.
-Also it's not possible to have a static link pointing to the latest artifacts.
-Other platforms like GitLab do provide that feature by default.
-To resolve this and make the \acro{PDF} easier to access on GitHub it's required to use additional actions.
+Sadly, GitHub currently does not provide an option for individual files without a zip.
+Also it is not possible to have a static link pointing to the latest artifacts.
+Other platforms such as GitLab do provide that feature by default.
+To resolve this and make the \acro{PDF} easier to access on GitHub, it is required to use additional actions.
 The most common way to do it is publishing the \acro{PDF} to an orphan branch.
-Usually this mechanism is used to create web pages and is called github-pages.
+Usually this mechanism is used to create web pages and is called \enquote{github-pages}.
 
-To be able to write in the repository it's necessary to adjust the permissions.
+To be able to write in the repository, it is necessary to adjust the permissions.
 GitHub is providing an interface within the yaml configuration:
 
 \begin{tugboatlisting}{yaml}
@@ -353,8 +354,8 @@ permissions:
 \end{tugboatlisting}
 
 This has to be added to the job which should upload the pdf.
-Additionally most actions which can be used for uploading artifacts to separate branches request a directory instead of a file.
-So all files have to be moved to a separate directory to be used with these actions.
+Additionally, most actions which can be used for uploading artifacts to separate branches request a directory instead of a file.
+Consequently, all files have to be moved to a separate directory to be used with these actions.
 
 \begin{tugboatlisting}[breaklines]{yaml}
 - name: move pdf
