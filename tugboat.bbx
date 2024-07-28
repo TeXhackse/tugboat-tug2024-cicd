@@ -30,20 +30,35 @@
   \OR\ifentrytype{report}\OR\ifentrytype{thesis}}%
   {#1}
   {
-     	\tl_set:Ne \l_tmpa_tl {\text_expand:n {#1}}
-     	\tl_if_head_eq_catcode:VNT \l_tmpa_tl l {
-     		\tl_set:Ne \l_tmpa_tl {
-     			\exp_not:N \NoCaseChange {\tl_item:Nn \l_tmpa_tl {1}}
-     			\tl_range:Nnn \l_tmpa_tl {2} {-1}
-     		}
-     	}
-     	\exp_args:NNV \bbx@colon@search\MakeSentenceCase \l_tmpa_tl
+		\tl_set:Ne \l_tmpa_tl {\text_expand:n {#1}}
+		\tl_if_head_eq_catcode:VNT \l_tmpa_tl l {
+			\int_zero:N \l_tmpa_int
+			\bool_set_true:N 	\l_tmpb_bool
+			\bool_while_do:nn {
+				\l_tmpb_bool && % didn't find a space yet
+				\tl_if_head_eq_catcode_p:eN {\tl_item:Nn \l_tmpa_tl {\l_tmpa_int+1}} l
+			} {
+				\str_if_eq:eeTF {\c_space_tl}{\str_item:Nn \l_tmpa_tl {\l_tmpa_int+1}} {
+					% found a space: \prg_break:
+					\bool_set_false:N \l_tmpb_bool
+				}  {
+					\int_incr:N \l_tmpa_int
+				}
+				\int_compare:nNnT {\l_tmpa_int} = {\tl_count:N  \l_tmpa_tl} {\bool_set_false:N \l_tmpb_bool}
+			}
+			\tl_set:Ne \l_tmpa_tl {
+				\exp_not:N \NoCaseChange {\tl_range:Nnn \l_tmpa_tl {1} {\l_tmpa_int}}\c_space_tl
+				\tl_range:Nnn \l_tmpa_tl {\l_tmpa_int +1} {-1}
+			}
+		}
+		%\tl_show:N \l_tmpa_tl
+		\exp_args:NNV \bbx@colon@search\MakeSentenceCase \l_tmpa_tl
   }
   }
 \ExplSyntaxOff
 
 
-  
+
 \DeclareSortingTemplate{tugboat}{
 \sort{
 \field{author}
@@ -112,11 +127,11 @@
 % {title}{#1}
 \DeclareFieldFormat{titlecase}{\MakeTitleCase{#1}}
 
-  
+
  \DeclareFieldFormat[inbook,thesis]{title}{\mkbibemph{#1}}
- 
+
 \DeclareFieldFormat[report]{number}{#1}
- 
+
 
 \renewbibmacro*{volume+number+eid}{%
   \printfield{volume}%
@@ -140,21 +155,21 @@
   \setunit*{\addcolon\space}%
   \usebibmacro{issue}%
   \newunit}
-  
+
 \newbibmacro*{issue+date-parens}{%
   \printfield{issue}%
 %  \setunit{\addcomma\space}*%
   \setunit*{\addcomma\space}
   \usebibmacro{date}%
   \newunit}
-  
+
 \renewcommand*{\mkbibordedition}[1]{\nth{#1}}
-  
+
 \DeclareFieldFormat{edition}{%
 \ifinteger{#1}
   {\mkbibordedition{#1}~\bibstring{edition}}
   {\MakeLowercase{#1}~\bibstring{edition}}}
-  
+
 \newcommand*{\volumenumberdelim}{} % delim between number and volume
 
 \DeclareFieldFormat{number}{\mkbibparens{#1}}
@@ -203,7 +218,7 @@
     {}%
   \usebibmacro{series+number:emphcond}%
   \newunit}
-  
+
 \DeclareBibliographyDriver{book}{%
   \usebibmacro{bibindex}%
   \usebibmacro{begentry}%
@@ -255,8 +270,8 @@
      \usebibmacro{related}}
     {}%
   \usebibmacro{finentry}}
-                   
-                   
+
+
 \renewbibmacro*{publisher+location+date}{%
   \printlist{location}%
   \setunit*{\addcomma\space}%
@@ -270,7 +285,7 @@
 %\setunit*{\addcomma\space}%
 \newunit
   }
-  
+
  %from numeric.bbx
 \defbibenvironment{bibliography}
 {\list
@@ -361,7 +376,7 @@
      \usebibmacro{related}}
     {}%
   \usebibmacro{finentry}}
-  
+
  \DeclareBibliographyDriver{collection}{%
     \usebibmacro{bibindex}%
     \usebibmacro{begentry}%
@@ -465,7 +480,7 @@
   \setunit*{\addcomma\space}%
   \usebibmacro{date}%
   \newunit}
-  
+
 %  \usebibmacro{publisher+location+date}%
 
 
@@ -480,7 +495,7 @@
   \setunit*{\addcomma\space}%
   \usebibmacro{date}%
   \newunit}
-  
+
   \DeclareBibliographyDriver{thesis}{%
     \usebibmacro{bibindex}%
     \usebibmacro{begentry}%
@@ -517,7 +532,7 @@
        \usebibmacro{related}}
       {}%
     \usebibmacro{finentry}}
-    
+
 \DeclareBibliographyDriver{manual}{%
   \usebibmacro{bibindex}%
   \usebibmacro{begentry}%
