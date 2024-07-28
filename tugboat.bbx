@@ -47,7 +47,7 @@
 				\int_compare:nNnT {\l_tmpa_int} = {\tl_count:N  \l_tmpa_tl} {\bool_set_false:N \l_tmpb_bool}
 			}
 			\tl_set:Ne \l_tmpa_tl {
-				\exp_not:N \NoCaseChange {\tl_range:Nnn \l_tmpa_tl {1} {\l_tmpa_int}}\c_space_tl
+				\exp_not:N \NoCaseChange {\tl_range:Nnn \l_tmpa_tl {1} {\l_tmpa_int}}\bool_if:NF \l_tmpb_bool\c_space_tl
 				\tl_range:Nnn \l_tmpa_tl {\l_tmpa_int +1} {-1}
 			}
 		}
