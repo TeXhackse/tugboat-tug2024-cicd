@@ -562,6 +562,8 @@ As this is within the context of running a package's test suite, the artifacts a
 We are not really interested in a \acro{PDF} but the test output.
 One of the authors created another action to take care of this~\cite{marcel-l3build-failure}:
 
+% Streamlined version of https://github.com/islandoftex/tug2024-workflow-github/blob/main/.github/workflows/main.yaml#L47
+% (w/o build matrix, w/o comment for the retention days)
 \begin{tugboatlisting}[firstnumber=11]{yaml}
 - name: Archive failed test output
   if: ${{ always() }}
