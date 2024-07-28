@@ -514,6 +514,9 @@ On GitHub there are two actions installing \TeXLive as a part of the workflow.
 Using those it's possible to minimize the container and this will also reduce the build time.
 
 \setListingIcon{\GitHub}
+% https://github.com/islandoftex/tug2024-workflow-document-github/pull/1 merged?
+% not merged: Streamlined version of https://github.com/islandoftex/tug2024-workflow-document-github/blob/main/.github/workflows/main.yaml#L32
+% merged: Add +3 to line numbers
 \begin{tugboatlisting}{yaml}
 - name: Install TeX Live
     uses: zauguin/install-texlive@v3
