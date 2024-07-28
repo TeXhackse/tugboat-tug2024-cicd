@@ -1,2 +1,2 @@
 $pdf_mode=4;
-$lualatex = "lualatex --shell-escape %O %S";
+$lualatex = "lualatex --synctex=-1 --shell-escape %O %S";
