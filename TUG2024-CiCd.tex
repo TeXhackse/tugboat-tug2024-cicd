@@ -264,7 +264,7 @@ Hence, we can move on to the next step: building a \LaTeX{} document.
 
 \subsubsection{Actually using \LaTeX}
 
-Actions are fundamentally based on isolated containers of software, which are run using docker.
+Actions are fundamentally based on isolated containers of software, which are run using Docker.
 Luckily, some of us live on the Island of \TeX{} and maintain images we could make use of here.\footnote{Special thanks to the other islanders at that point!}
 The setup of the images is described within~\cite{islandoftex-docker-short}.
 
@@ -505,7 +505,7 @@ This will force the step to run also if the previous step failed.
 
 \subsection{GitLab}
 
-Again GitLab directly supports this without loading external extensions.
+Again, GitLab directly supports always uploading test results without loading external extensions:
 
 \begin{tugboatlisting}{yaml}
   - l3build check --show-log-on-error -q -H
@@ -516,7 +516,7 @@ artifacts:
 \end{tugboatlisting}
 
 This simplifies the standard setup but is less flexible.
-So for example if you want to use different artifacts for success than failure, it's required to do that within two separate jobs within GitLab.
+For example if one wants to use different artifacts for success and failure, it is required to do that within two separate jobs within GitLab.
 
 
 \section{Running locally}
@@ -527,7 +527,7 @@ These setups usually use Docker.
 For the platforms which use actions there is a tool called \enquote{act} to simplify that process using the Docker API.
 %Forgejo is extending this tool and using it for their runners\cite{forgejo-runner}.
 
-Gitlab is extending this by the option to simply have a gitlab runner installed locally.
+GitLab is extending this by the option to simply have a GitLab runner installed locally.
 This provides the option of running
 
 \begin{tugboatlisting}{shell}
@@ -539,24 +539,24 @@ within a local repository containing some Gitlab CI configuration.
 %It's possible to configure the pipelines to run directly on the machine instead of using docker containers.
 
 
-\section{ Continuous Development}
+\section{Continuous Development}
 
 Of course every configuration shown here is only an example and can be extended depending on the project's requirements.
-It's possible to run arbitrary commands, especially for complex setups this might be necessary.
+It is possible to run arbitrary commands, which might be necessary especially for complex setups.
 
-For example when creating magazines it's possible to continuously create print and online version, excerpts of single articles as well as  HTML/EPUB  output, while the editors only have to wait for the compilation of the article they actually are working on.
+For example, when creating magazines, it is possible to continuously create a print and an online version, excerpts of single articles as well as HTML/EPUB output, while the editors only have to wait for the compilation of the article they actually are working on.
 
 The same goes for study material where we have rendered version including solutions and some without or documents which share a lot of links between each other and therefore require a lot of runs.
 
 Integrating these structures into more advanced git usage like a useful branching concept can also help to improve collaboration or simplify the contribution process within OpenSource projects.
-It will reduce frustration for maintainers as some issues don't have to be checked manually.
-
-…
+It will reduce frustration for maintainers as some issues do not have to be checked manually.
 
 \section{Conclusion and Outlook}
 
-We explained the use of GitHub, Forgejo, and GitLab for compiling documents, templates, and packages.
-The explanations within the GitHub section are more detailed than the others.
+We explained the use of GitHub, Forgejo, and GitLab for compiling \LaTeX{} documents and packages.
+We showed how different releases of \TeXLive{} and even different \LaTeX{} compilers can be used.
+It was also shown how resulting artifacts (PDF flies and test resutls) can be made available automatically.
+The explanations within the GitHub section were more detailed than the others.
 It is planned to have some extended version of this article where instructions are only focusing on the specific platform.
 
 
