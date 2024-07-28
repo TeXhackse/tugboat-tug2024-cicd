@@ -138,7 +138,7 @@ Everything went into or is moving towards the cloud.
 But there also is a third variant to compile documents which can be used also to improve package development and in general the stability of \LaTeX:
 adapting DevOps methods, like continuous integration and delivery (\acro{CI/CD}) using automated workflows.
 
-As a very rough working definition, let us consider a \acro{CI/CD} workflow as a number of steps to compile a\TeX{} document to \acro{PDF} on some kind of online service that has access to the source files.
+As a very rough working definition, let us consider a \acro{CI/CD} workflow as a number of steps to compile a \TeX{} document to \acro{PDF} on some kind of online service that has access to the source files.
 
 \section{Why continuous integration?}
 Having an established workflow usually makes people avoid thinking about changing anything.
@@ -151,12 +151,12 @@ But the advantages of these methods extend beyond that. We will focus on some ch
 
 \subsection{Works for me?!}
 Sometimes, I can successfully compile my document on my machine, but my supervisor can't on his.
-There are tons of reasons why a\TeX{} compilation may succeed on one system and fail on another.
+There are tons of reasons why a \TeX{} compilation may succeed on one system and fail on another.
 Running some external continuous integration pipeline will not only illustrate the necessary steps to go from source to the full \acro{PDF}.
 It will also help understand if problems are machine specific issues or general ones.
 
 \subsection{Compatibility and regression testing}
-It's possible to run workflows on multiple\TeX{} distributions or versions.
+It's possible to run workflows on multiple \TeX{} distributions or versions.
 This can be used to test if there are any issues with some package update before updating a machine to, e.\,g., install the latest MikTeX updates where downgrading may be complicated.\footnote{That's another issue to address … but a different story.}
 
 Additionally, you can also use it to check backwards compatibility, e.\,g., if one collaborator is using a Debian Stable which is stuck on some outdated version.
@@ -429,7 +429,7 @@ Side remark: If you are not looking to reduce the images themselves but the comp
 
 Back to minimizing the build environment: the most annoying part here might be to find out which packages are actually needed to compile…
 
-So the Island of\TeX{} proudly presents: \DEPP – The DEPendency Printer for \TeXLive\cite{depp}.\footnote{If you are German, do not be surprised if this tool is cleverer than its name suggests.}
+So the Island of \TeX{} proudly presents: \DEPP – The DEPendency Printer for \TeXLive\cite{depp}.\footnote{If you are German, do not be surprised if this tool is cleverer than its name suggests.}
 
 As this article should focus on pipelines we won't go into detail on the tool itself but instead show how \DEPP produces a file listing all \TeXLive packages necessary for the build.
 For the example projects these look like:
