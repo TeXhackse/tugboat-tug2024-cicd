@@ -10,3 +10,11 @@ jobs:
         uses: actions/checkout@v4
       - name: Run latexmk
         run: "latexmk"
+      - name: move pdf
+        run: mkdir -p build && mv *.pdf build/.
+      - uses: crazy-max/ghaction-github-pages@v4
+        with:
+          target_branch: pdf-output
+          build_dir: build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
