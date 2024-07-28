@@ -83,6 +83,23 @@ not a strict requirement.}
    	\begin{minted@colorbg}{ListingColBack}\begin{minted}[#1]{#2}}
 {\end{minted}\end{minted@colorbg}}
 
+
+\makeatletter
+\renewenvironment{minted@snugshade*}[1]{%
+  \def\FrameCommand##1{\hskip\@totalleftmargin
+    \colorbox{#1}{##1}\llap{\raisebox{.5ex}[0pt][0pt]{\listingIcon\hspace*{1ex}}}
+    %
+    \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+  \MakeFramed{\advance\hsize-\width
+    \@totalleftmargin\z@ \linewidth\hsize
+    \advance\labelsep\fboxsep
+    \@setminipage}%
+ }{\par\unskip\@minipagefalse\endMakeFramed}
+
+\makeatother
+\newcommand*{\setListingIcon}[1]{\def\listingIcon{#1}}
+\setListingIcon{}
+
 \AddToHook{cmd/inputminted/before}{\begin{minted@colorbg}{ListingColBack}}
 \AddToHook{cmd/inputminted/after}{\end{minted@colorbg}}
 \fi
@@ -115,10 +132,24 @@ not a strict requirement.}
 \newcommand*{\directory}[1]{\texttt{#1}}
 \newcommand*{\containerimage}[1]{\enquote{#1}}
 
+
 \graphicspath{{}{img/}}
 
 %TODO acro
 % cici = continous ingegration and continous delivery
+
+\usepackage{fontawesome5}
+
+\NewDocumentCommand{\GitHub}{s}{%
+	\faIcon{github}%
+}
+\NewDocumentCommand{\GitLab}{s}{%
+	\faIcon{gitlab}%
+}
+\NewDocumentCommand{\Forgejo}{s}{%
+	\includegraphics[height=1.3\ht\strutbox, alt={Black and white version of the Forgejo Icon}]{forgejo-icon}%
+}
+%\setListingIcon
 
 \AtBeginDocument{
 	\newlength{\mintednumbersep}
@@ -198,6 +229,7 @@ It is planned to have some extended version of this article where instructions a
 \section{Compiling a document in a CI pipeline}
 
 \subsection{First steps with GitHub Actions}
+\setListingIcon{\GitHub}
 
 To get started, we need a git repository somehow hosted on GitHub.
 You may also use a private one.
@@ -355,6 +387,7 @@ The provided demo repositories on codeberg.org, which is a Forgejo instance, als
 % TODO: link to codeberg?
 
 \subsection{Compiling a document using GitLab CI}
+\setListingIcon{\GitLab}
 
 GitLab CI is not that much different from the previous Actions setups.
 Actually, it's a bit easier to set up continuous integration here as some steps run automatically.
@@ -382,6 +415,7 @@ Using the example config on one of the demo projects would make it
 \end{FlushLeft}
 
 \section{Testing with multiple versions or compilers}
+\setListingIcon{\GitHub}
 
 We promised one can extend these setups to test using multiple \TeX{} versions or engines.
 Different engines are actually straightforward to include by running additional steps with different commands.
@@ -411,6 +445,7 @@ A full list of the provided images can be found at \cite{islandoftex-docker-gitl
 
 Similarly, on GitLab there is also a matrix feature.
 The following example even illustrates how to run multiple engines each on multiple \TeXLive releases:
+\setListingIcon{\GitLab}
 
 \begin{tugboatlisting}[escapeinside=||,breaklines,breakafter=/]{yaml}
 check:
@@ -426,6 +461,7 @@ Here the variable is more like a bash variable but can be used the same way.
 
 
 \section{Minimize the build container}
+\label{sec:minimize}\setListingIcon{}
 The previous examples used a full \TeXLive installation to have the most convenient setup.\footnote{Almost, the images we used neither include the documentation nor the source tree of \TeXLive.}
 The IoT images even ship all dependencies of additional tools like arara or minted so that all tools in \TeXLive will work out of the box.
 
@@ -454,6 +490,7 @@ cm
 On GitHub there are two actions installing \TeXLive as a part of the workflow.
 Using those it's possible to minimize the container and this will also reduce the build time.
 
+\setListingIcon{\GitHub}
 \begin{tugboatlisting}{yaml}
 - name: Install TeX Live
     uses: zauguin/install-texlive@v3
@@ -466,18 +503,18 @@ The \directive{package_file:} is the path to the \DEPP-output or some manually c
 
  \subsection{GitLab}
 
- On GitLab the simplified syntax makes this a bit more complex.
- The \DEPP repository is luckily providing a shell script to install a \TeXLive based on the package file.
- This can be used in the pipelines to modify the container.
- Another option would be to provide a container image which already contains the necessary packages.
- If a self-hosted runner is used, this usually is the best option as caching can be configured to control when the container is rebuilt or updated.
+On GitLab the simplified syntax makes this a bit more complex.
+The \DEPP repository\cite{depp} is luckily providing a shell script to install a \TeXLive based on the package file.
+This can be used in the pipelines to modify the container.
+Another option would be to provide a container image which already contains the necessary packages.
+If a self-hosted runner is used, this usually is the best option as caching can be configured to control when the container is rebuilt or updated.
 
 \section{Pipelines for package developers}
 
 As promised, the advantages of using automated pipelines are even more significant when used within the development process of packages or templates.
 In this case, we expect the repository to contain a package and some kind of \command{l3build} configuration.\footnote{Of course, the setup itself also works for other tools, but that is out of scope for this article.}
 
-\subsection{GitHub}
+\subsection{GitHub}\setListingIcon{\GitHub}
 The \command{latex} command, or \command{latexmk} in the examples, will be replaced by
 
 \begin{tugboatlisting}{yaml}
@@ -505,6 +542,7 @@ To let GitHub know that we actually are interested in these artifacts, \mintinli
 This will force the step to run also if the previous step failed.
 
 \subsection{GitLab}
+\setListingIcon{\GitLab}
 
 Again GitLab directly supports this without loading external extensions.
 
@@ -521,6 +559,7 @@ So for example if you want to use different artifacts for success than failure, 
 
 
 \section{Running locally}
+\setListingIcon{}
 Within the tutorial at TUG there was a short journey to running the pipelines locally.
 This might be helpful for debugging as one can control the steps manually or to ensure the local setup matches the one on the server.
 
@@ -535,7 +574,7 @@ This provides the option of running
 gitlab-runner exec
 \end{tugboatlisting}
 
-within a local repository containing some Gitlab CI configuration.
+\noindent within a local repository containing some Gitlab CI configuration.
 
 %It's possible to configure the pipelines to run directly on the machine instead of using docker containers.
 
