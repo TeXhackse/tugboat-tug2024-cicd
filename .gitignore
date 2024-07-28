@@ -1,7 +1,9 @@
 depp/
 DEPP.rc
 
-tug2024-latex-workflows.pdf
+tug2024-CiCd.pdf
+
+*-SAVE-ERROR
 
 # Created by https://www.toptal.com/developers/gitignore/api/latex
 # Edit at https://www.toptal.com/developers/gitignore?templates=latex
