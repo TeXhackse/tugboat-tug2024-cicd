@@ -195,12 +195,12 @@ It will also help understand if problems are machine specific issues or general 
 It is possible to run workflows on multiple \TeX{} distributions or versions.
 This can be used to test if there are any issues with some package update before updating a machine to, e.\,g., install the latest MikTeX updates where downgrading may be complicated.\footnote{That's another issue to address … but a different story.}
 
-Additionally, you can also use it to check backwards compatibility, e.\,g., if one collaborator is using a Debian Stable which is stuck on some outdated version.
-As mentioned the \LaTeX{} Project Team is already using these techniques and even provides functionality for regression testing within their build system \enquote{l3build} \cite{l3build}.
+Additionally, one can also use it to check backwards compatibility, e.\,g., if one collaborator is using a Debian Stable which is stuck on some outdated version.
+As mentioned, the \LaTeX{} Project Team is already using these techniques and even provides functionality for regression testing within their build system \enquote{l3build} \cite{l3build}.
 
 Using this as a package developer enables a general interface to be used for regression testing.
 This allows to avoid some of the bugs which otherwise would be published and should be found by a user.
-Also it can be used to avoid inconsistent structures, e.\,g., one of the authors recently found that tons of packages and files within \TeXLive{} don't have a proper version number set within the code.
+Furthermore, it can be used to avoid inconsistent structures, e.\,g., one of the authors recently found that tons of packages and files within \TeXLive{} do not have a proper version number set within the code.
 
 \section{Structure of this tutorial}
 
@@ -218,7 +218,7 @@ So developers usually use an extended version of the setup provided for the auth
 
 As all platforms covered by this article are related to the git version control system, we expect the project to be some kind of git repository.
 In case the reader does not yet use git, there is a little bit of information attached to this tutorial.
-Using that it would be possible to use git without even noticing as it's attached to the autosave function of an editor.
+Using that, it would be possible to use git without even noticing as it is attached to the autosave function of an editor.
 
 As the \LaTeX{} project is using GitHub, we are going to start with a detailed explanation of GitHub Actions and create a matching setup on the other platforms afterwards.
 All workflows are available for customization in template repositories we will link to in each section.
@@ -232,9 +232,9 @@ It is planned to have some extended version of this article where instructions a
 \setListingIcon{\GitHub}
 
 To get started, we need a git repository somehow hosted on GitHub.
-You may also use a private one.
+It doesn't have to be a public one.
 
-Thinking of the tasks needed to compile a LaTeX document in any “blank slate” environment, we have to do the following:
+Thinking of the tasks needed to compile a \LaTeX{} document in any “blank slate” environment, we have to do the following:
 
 \begin{enumerate}
 \item Prepare the environment and install a \LaTeX{} distribution.
@@ -244,7 +244,7 @@ Thinking of the tasks needed to compile a LaTeX document in any “blank slate�
 \noindent GitHub provides pre-configured actions which are able to combine multiple steps, e.\,g., the latex-action \cite{latex-action}.
 This  is starting another container inside the action container to run \command{latexmk}.
 However, those actions usually limit the configuration options to simplify the interface.
-We are going to elaborate on both variants.
+We are going to elaborate on two variants: Using a container image with a full \TeXLive (this section) and a minimal installation (see Section~\ref{sec:min}).
 
 The configuration for an action is done by creating a yaml file within the repositories' subdirectory \file{.github/workflows/hellow-world.yml}.
 The name may be chosen individually.
@@ -593,11 +593,11 @@ It will reduce frustration for maintainers as some issues don't have to be check
 
 …
 
+\section{Conclusion and Outlook}
 
-
-
-
-
+We explained the use of GitHub, Forgejo, and GitLab for compiling documents, templates, and packages.
+The explanations within the GitHub section are more detailed than the others.
+It is planned to have some extended version of this article where instructions are only focusing on the specific platform.
 
 \begin{table*}
 \caption{Template repositories published with this article. The naming scheme is structured as
