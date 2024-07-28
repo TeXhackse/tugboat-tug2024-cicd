@@ -429,17 +429,17 @@ test-on-IoT-texlive:
   runs-on: ubuntu-22.04
   strategy:
     matrix:
-      image: ["TL2022-historic", |…|]
+      image: ["TL2022-historic", "TL2023-historic", "latest"]
   name: "Test on ${{ matrix.image }}"
   container:
-    image: registry.gitlab.com/islandoftex/images/texlive:${{ matrix.image }}
+    image: texlive/texlive:${{ matrix.image }}
   steps:
 \end{tugboatlisting}
 
 \begin{description}
 \item[strategy:] this is used to create a loop over elements.
-In this case a variable called \mintinline{yaml}|matrix| containing a list of images is used and the content can be accessed within other parts of the file using \mintinline{yaml}|${{ matrix.image }}|.
-So the first run will be on \enquote{texlive:TL2022-hostoric}.
+In this case, a variable called \mintinline{yaml}|matrix| containing a list of images is used and the content can be accessed within other parts of the file using \mintinline{yaml}|${{ matrix.image }}|.
+Thus, the first run will use TL2022, continue on 2023 and finally run on the latest release.
 A full list of the provided images can be found at \cite{islandoftex-docker-gitlab}.
 \end{description}
 
