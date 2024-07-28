@@ -1,5 +1,7 @@
 name: latexmk
 on: [push]
+permissions: 
+  contents: write
 jobs:
   action-test:
     runs-on: ubuntu-latest
