@@ -360,6 +360,8 @@ This has to be added to the job which should upload the pdf.
 Additionally, most actions which can be used for uploading artifacts to separate branches request a directory instead of a file.
 Consequently, all files have to be moved to a separate directory to be used with these actions.
 
+% This gets added via https://github.com/islandoftex/tug2024-workflow-document-github/pull/1
+% (However, the code below is a simplified version)
 \begin{tugboatlisting}[breaklines,firstnumber=15]{yaml}
 - name: move pdf
    run: mkdir -p build && mv *.pdf build/.
