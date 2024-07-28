@@ -595,6 +595,51 @@ It will reduce frustration for maintainers as some issues don't have to be check
 
 
 
+
+
+
+\begin{table*}
+\caption{Template repositories published with this article. The naming scheme is structured as
+\meta{ci-type}\_\meta{task} adding \enquote{\_minimal} if the example is not using a pre-packaged Docker Image but includes methods to install packages based on a dependency file as described in \ref{sec:minimize}. –
+All variants listed here have been prepared for at least the 3 platforms mentioned in here.
+As the URLs quite long, we published the list including links within the paper's repository {\citefield{tug2024-cicd-tugboat-sources}[citeurl]{url}}.
+}
+%(github-actions|gitlab-ci|forgejo-actions)-(compile-document|l3build)(-depp)?}
+\label{tab:demo-repos}
+
+\ExplSyntaxOn
+\cs_set:cpn {latex-Document} {\faCheck}
+\cs_set:cpn {latex_testing-Document} {\faCheck}
+\cs_set:cpn {l3build-l3build} {\faCheck}
+\cs_set:cpn {latex_testing-testing} {\faCheck}
+\cs_set:cpn {l3build-testing} {\faCheck}
+\begin{tabularx}{\linewidth}{@{}l*{5}{c}@{}}
+\toprule
+Name& Platforms & Document & l3build & Testing & IoT~Image\\
+\midrule
+%\clist_map_inline:nn {github-actions, gitlab-ci, forgejo-actions} {
+	\clist_map_inline:nn {latex, latex_testing, l3build} {
+%		\clist_map_inline:nn {_minimal, \reax} {
+			%iot based setups
+			#1
+			&\faGithub\quad\faGitlab\quad\includegraphics[height=1.3\ht\strutbox, alt={Black and white version of the Forgejo Icon}]{forgejo-icon}
+			&\cs_if_exist_use:c {#1-Document} & \use:c {#1-l3build} & \use:c {#1-testing} &
+			\faCheck
+			\\
+			%minimal setups
+			#1_minimal
+			&\faGithub\quad\faGitlab\quad\includegraphics[height=1.3\ht\strutbox, alt={Black and white version of the Forgejo Icon}]{forgejo-icon}
+			&\cs_if_exist_use:c {#1-Document} & \use:c {#1-l3build} & \use:c {#1-testing} &
+			\\
+%		}
+	}
+%}
+\end{tabularx}
+\ExplSyntaxOff
+\end{table*}
+
+
+
 %\printbibliography
 \def\url{\tbsurl}
 \SetBibJustification{\raggedright \advance\itemsep by 1pt plus1pt minus1pt }
