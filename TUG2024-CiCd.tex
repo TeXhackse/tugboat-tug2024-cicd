@@ -333,6 +333,7 @@ If the pipeline succeeds, there will be a green checkmark, but we will fail to f
 This is because GitHub does not know which (output) files the user actually wants to see or download.
 Such files are called \enquote{artifacts}, so now we will adjust the action to keep the PDF and upload it to GitHub as an artifact.
 
+% This is a stream-lined variant from https://github.com/islandoftex/tug2024-workflow-document-github/blob/main/.github/workflows/main.yaml#L48
 \inputminted[firstline=13, lastline=17,autogobble]{yaml}{examples/latex-basic.yml}
 
 After another (successful) run of the pipeline, it is possible to access the \acro{PDF} wrapped within a \file{*.zip} at the run's status page.
