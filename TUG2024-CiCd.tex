@@ -197,7 +197,7 @@ All workflows are available for customization in template repositories we will l
 \subsection{First steps with GitHub Actions}
 
 To get started, we need a git repository somehow hosted on GitHub.
-Both a private and a public repository works equally well.
+Both a private and a public repository work equally well.
 
 Thinking of the tasks needed to compile a \LaTeX{} document in any “blank slate” environment, we have to do the following:
 
@@ -207,9 +207,9 @@ Thinking of the tasks needed to compile a \LaTeX{} document in any “blank slat
 \end{enumerate}
 %
 \noindent GitHub provides pre-configured actions which are able to combine multiple steps, e.\,g., the latex-action \cite{latex-action}.
-This  is starting another container inside the action container to run \command{latexmk}.
+This is starting another container inside the action container to run \command{latexmk}.
 However, those actions usually limit the configuration options to simplify the interface.
-We are going to elaborate on two variants: Using a full container image (this section) and a minimal installation (Sect.~\ref{sec:min}).
+As a consequence, we are going to elaborate on two variants: Using a full container image (this section) and a minimal installation (Sect.~\ref{sec:min}).
 
 The configuration for an action is done by creating a yaml file within the repositories' subdirectory \file{.github/workflows/hellow-world.yml}.
 The name may be chosen individually.
@@ -228,44 +228,45 @@ This is important if a project contains multiple workflows.
 \item[on:] This directive indicates conditions under which the workflow will be started.
 In this configuration, the jobs will be started on any push, i.\,e., whenever the repository on the server receives an update.
 
-Besides attaching the trigger to some user action it's possible use time based settings.
-For all options it's worth to have a look at the configuration manual \cite{github-actions-ref}.
+Besides attaching the trigger to some user action it is possible use time-based settings.
+For all options it is worth to have a look at the configuration manual \cite{github-actions-ref}.
 The default settings differ for all platforms, but even may be specific for a single instance.
 
 \item[jobs] contains a list of jobs to be run one after another.
-For example, it's quite common to have one job for compiling a document and another one to make the \acro{PDF} available.
+For example, it is quite common to have one job for compiling a document and another one to make the \acro{PDF} available.
 In this example, there is only one job called \enquote{action-test}.
 
 \item[runs-on:] This value corresponds to a runner setup.
 Runners are the machines to actually execute the jobs defined in a workflow.
-It doesn't have to be the same server as the one where the repository is hosted.
+It does not have to be the same server as the one where the repository is hosted.
 In this example, \enquote{ubuntu-latest} indicates running on one of the provided runners by GitHub which is based on Ubuntu.
 It includes NodeJS and some tooling to simplify the work using predefined actions.
 A full list of the readily available runners and detailed description of the images can be found at \cite{github-hosted-runners}.
 
 \item[steps:] This is what the workflow should actually do.
-As one can see it's possible to directly enter bash code in there.
-This example is only creating some output and should therefore run without any issues.
+As one can see it is possible to directly enter bash code in there.
+This example is only creating some output and therefore should run without any issues.
 \end{description}
 
 On GitHub, actions are automatically enabled for new repositories.
-When combined with an available runner like we do, it's enough to add a yaml configuration file to the repository to see the effect.
+When combined with an available runner like we do, it is enough to add a yaml configuration file to the repository to see the effect.
 After pushing that configuration, the pipeline will start running on all subsequent pushes.
+Be aware that for repository forks, actions need to be enabled explicitly in the tab \enquote{Actions}.
 
 The current status of an action, i.e., what step it is currently running or if it already finished, can always be checked having a look at
-\meta{repository url}\url{/actions} e.\,g. for the first of our demo repositories, this can be found at
+\meta{repository url}\url{/actions} e.\,g., for the first of our demo repositories, this can be found at
 {\DeclareFieldFormat{citeurlpostfix}{\url{#1/actions}}\citefield{workflow-github}[citeurlpostfix]{url}}.
 
-\noindent\includegraphics[width=\linewidth,alt={Cropping of a Screenshot from the GitHub Actions status page of a repository. The run was successful. The commit was von bei @TeXhackse and the commit message says  “Initial setup” followed by a lion emojy.}]{screenshot-pipeline-successful}
+\noindent\includegraphics[width=\linewidth,alt={Cropping of a Screenshot from the GitHub Actions status page of a repository. The run was successful. The commit was by @TeXhackse and the commit message says  “Initial setup” followed by a lion emojy.}]{screenshot-pipeline-successful}
 
 The pipeline ran successfully but did not do anything but create some shell output.
 Hence, we can move on to the next step: building a \LaTeX{} document.
 
 \subsubsection{Actually using \LaTeX}
 
-Actions are fundamentally based on running isolated containers of software using docker.
+Actions are fundamentally based on isolated containers of software, which are run using docker.
 Luckily, some of us live on the Island of \TeX{} and maintain images we could make use of here.\footnote{Special thanks to the other islanders at that point!}
-The setup of the images was described within \cite{islandoftex-docker-short}.
+The setup of the images is described within~\cite{islandoftex-docker-short}.
 
 The first part of the workflow will stay the same for the moment.
 Changes only apply after \directive{runs-on}:
@@ -274,42 +275,42 @@ Changes only apply after \directive{runs-on}:
 
 
 \begin{description}
-\item[container:] Choosing the IoT \containerimage{texlive-latest} image which provides a full \TeXLive + some tools\cite{islandoftex-docker}.
+\item[container:] Choosing the IoT \containerimage{texlive-latest} image which provides a full \TeXLive{} + some tools~\cite{islandoftex-docker}.
 \item[steps:]
 The first step looks different from the one, we had before.
 It received a name, which is helpful to simplify debugging as GitHub will tell us which step failed.
 
 \item[uses:] is a reference to another action and GitHub's way to reference pre-configured pipelines encapsulating more complex tasks.
-So \action{checkout@v4} refers to a separate repository \cite{github-action-checkout}.
-This action takes care of the authentication and some internals, so we don't have to deal with details.
+In the example, \action{checkout@v4} refers to a separate repository \cite{github-action-checkout}.
+This action takes care of the authentication and some internals, so we do not have to deal with details.
 
 The important part is that only after this action, the following steps start being executed within the root directory of our repository.
 
-The second step is kind of the same as in the first example, but this time we run \command{latexmk}\cite{latexmk} using \command{lualatex}.
+The second step is kind of the same as in the first example, but this time we run \command{latexmk}~\cite{latexmk} using \command{lualatex}.
 By default, this will run on all \file{*.tex} files within the root directory.
-So we don't even have to depend on the file name as long as we store files to be included within subdirectories.
+So we do not even have to depend on the file name as long as we store files to be included within subdirectories.
 \end{description}
 
-\subsubsection{Where's the PDF?}
+\subsubsection{Where is the PDF?}
 If the pipeline succeeds, there will be a green checkmark, but we will fail to find the PDF somewhere.
 This is because GitHub does not know which (output) files the user actually wants to see or download.
 Such files are called \enquote{artifacts}, so now we will adjust the action to keep the PDF and upload it to GitHub as an artifact.
 
 \inputminted[firstline=13, lastline=17,gobble=3]{yaml}{examples/latex-basic.yml}
 
-After another (successful) run of the pipeline it's possible to access the \acro{PDF} wrapped within a  \file{*.zip} at the run's status page.
+After another (successful) run of the pipeline, it is possible to access the \acro{PDF} wrapped within a \file{*.zip} at the run's status page.
 Clicking on the run on the actions overview page leads there:
 
 \noindent\includegraphics[width=\linewidth,alt={Cropping of a screenshot. It shows the GitHub artifacts download section. A Packaged artifact called “Documentation” is available.}]{screenshot-artifacts}
 
-Sadly GitHub currently does not provide an option for individual files without a zip.
-Also it's not possible to have a static link pointing to the latest artifacts.
-Other platforms like GitLab do provide that feature by default.
-To resolve this and make the \acro{PDF} easier to access on GitHub it's required to use additional actions.
+Sadly, GitHub currently does not provide an option for individual files without a zip.
+Also it is not possible to have a static link pointing to the latest artifacts.
+Other platforms such as GitLab do provide that feature by default.
+To resolve this and make the \acro{PDF} easier to access on GitHub, it is required to use additional actions.
 The most common way to do it is publishing the \acro{PDF} to an orphan branch.
-Usually this mechanism is used to create web pages and is called github-pages.
+Usually this mechanism is used to create web pages and is called \enquote{github-pages}.
 
-To be able to write in the repository it's necessary to adjust the permissions.
+To be able to write in the repository, it is necessary to adjust the permissions.
 GitHub is providing an interface within the yaml configuration:
 
 \begin{tugboatlisting}{yaml}
@@ -318,8 +319,8 @@ permissions:
 \end{tugboatlisting}
 
 This has to be added to the job which should upload the pdf.
-Additionally most actions which can be used for uploading artifacts to separate branches request a directory instead of a file.
-So all files have to be moved to a separate directory to be used with these actions.
+Additionally, most actions which can be used for uploading artifacts to separate branches request a directory instead of a file.
+Consequently, all files have to be moved to a separate directory to be used with these actions.
 
 \begin{tugboatlisting}{yaml}
 - name: move pdf
@@ -333,46 +334,45 @@ So all files have to be moved to a separate directory to be used with these acti
 \end{tugboatlisting}
 
 The GitHub token also is necessary to be used for the authentication.
-Otherwhise the run might be successfull but no PDF will appear on the branch.
+Otherwise, the run might be successful, but no PDF will appear on the branch.
 %During the preparation of the workshow and this article we've been testing a lot of the uploading actions.
 %Actually all somehow do the same, there are just differences in how to configure.
 
 \subsection{Differences to Forgejo Actions}
-Forgejo\cite{forgejo} is another code platform which has the aim to be more open than GitHub.
-It can be self-hosted and now provides mechanism similar got GitHub Actions.
+Forgejo~\cite{forgejo} is another code platform which has the aim to be more open than GitHub.
+It can be self-hosted and now provides mechanism similar to GitHub Actions.
 They will never act in the same way as GitHub's mechanism, but are almost compatible.
 
 By default, Forgejo searches \directory{.forgejo/workflows/} for configuration files.
 If none are found it will even fall back to look inside the \directory{.github/} directory.
 The only issue you would probably face from just reusing a GitHub setup is that there are no hosted runners on most instances.
-And in case there are they will probably be different from GitHub's.
+Even if there are runners available, they will probably be different from GitHub's.
 
-But in case you can configure a runner yourself and use the same labels as the GitHub runner \cite[described in]{forgejo-runner-config} uses, it's possible to use the same workflow configs on both.
+However, in case you can configure a runner yourself and use the same labels as the GitHub runner uses (described in~\cite{forgejo-runner-config}), it is possible to use the same workflow configurations on both.
 The provided demo repositories on codeberg.org, which is a Forgejo instance, also explain how the runners used there are configured.
 % TODO: link to codeberg?
 
 \subsection{Compiling a document using GitLab CI}
 
 GitLab CI is not that much different from the previous Actions setups.
-Actually, it's a bit easier to set up continuous integration here as some steps run automatically.
-For example, it's not necessary to checkout the repository.
-That's already done by default.
+Actually, it is a bit easier to set up continuous integration here as some steps run automatically.
+For example, it is not necessary to checkout the repository, because this is already done by default.
 
 The configuration file has to be placed within the repository's root directory and is named \file{.gitlab-ci.yml}.
 
 \inputminted[breaklines,breakafter=/]{yaml}{examples/latex-basic-gitlab.yml}
 
-Here the steps only are a list of commands run after each other. Currently the list only contains one \command{latexmk} call.
+Here the steps only are a list of commands run after each other. Currently, the list only contains one \command{latexmk} call.
 
-As mentioned before GitLab is providing an API which allows to create static links to the artifacts.
-So the \file{README.md} of the demo repositories there include a link of the following structure:
+In contrast to GitHub, GitLab is providing an API which allows creating static links to the artifacts.
+Thus, the \file{README.md} of the demo repositories there include a link of the following structure:
 
 \begin{FlushLeft}
 \meta{Repository URL}\url{/-/jobs/artifacts/}\meta{branch}\allowbreak\url{/browse?job=}\meta{name of the job}
 \end{FlushLeft}
 
-this will list all artifacts attached to the job.
-Using the example config on one of the demo projects would make it
+This will list all artifacts attached to the job.
+Using the example config on one of the demo projects makes it:
 
 \begin{FlushLeft}
 {\DeclareFieldFormat{citeurlpostfix}{\url{#1/-/jobs/artifacts/main/browse?job=run-LaTeX}}\citefield{workflow-document-gitlab}[citeurlpostfix]{url}}
@@ -382,17 +382,17 @@ Using the example config on one of the demo projects would make it
 
 We promised one can extend these setups to test using multiple \TeX{} versions or engines.
 Different engines are actually straightforward to include by running additional steps with different commands.
-Of course, it's alternatively possible to use those in separate actions or even workflow files.
+Of course, it is alternatively possible to use those in separate actions or even workflow files.
 There is no general way to structure those as it always depends on whether to always run everything or save resources by conditional or sequential execution.
 
-To use different versions of \TeXLive{}, the Island of \TeX{} provides historic images of all but the latest \TeXLive release (which isn't historic yet anyway).
+To use different versions of \TeXLive{}, the Island of \TeX{} provides historic images of all but the latest \TeXLive release (which is not historic yet anyway).
 
 \begin{tugboatlisting}[escapeinside=||,breaklines,breakafter=/:]{yaml}
 test-on-IoT-texlive:
   runs-on: ubuntu-22.04
   strategy:
     matrix:
-      image: ["TL2022-historic", |…|]
+      image: ["TL2022-historic", "TL2023-historic", "latest"]
   name: "Test on ${{ matrix.image }}"
   container:
     image: registry.gitlab.com/islandoftex/images/texlive:${{ matrix.image }}
@@ -401,8 +401,8 @@ test-on-IoT-texlive:
 
 \begin{description}
 \item[strategy:] this is used to create a loop over elements.
-In this case a variable called \mintinline{yaml}|matrix| containing a list of images is used and the content can be accessed within other parts of the file using \mintinline{yaml}|${{ matrix.image }}|.
-So the first run will be on \enquote{texlive:TL2022-hostoric}.
+In this case, a variable called \mintinline{yaml}|matrix| containing a list of images is used and the content can be accessed within other parts of the file using \mintinline{yaml}|${{ matrix.image }}|.
+Thus, the first run will be on \enquote{texlive:TL2022-historic}, the next on \enquote{texlive:TL2023-historic}, and the final one  on \enquote{texlive:latest}.
 A full list of the provided images can be found at \cite{islandoftex-docker-gitlab}.
 \end{description}
 
@@ -424,20 +424,18 @@ Here the variable is more like a bash variable but can be used the same way.
 
 \section{Minimize the build container}
 \label{sec:min}
-The previous examples used a full \TeXLive installation to have the most convenient setup.\footnote{Almost, the images we used neither include the documentation nor the source tree of \TeXLive.}
-The IoT images even ship all dependencies of additional tools like arara or minted so that all tools in \TeXLive will work out of the box.
+The previous examples used a full \TeXLive installation to have the most convenient setup.\footnote{Almost: the images we used neither include the documentation nor the source tree of \TeXLive.}
+The IoT images even ship all dependencies of additional tools such as arara or minted, which enables that all tools in \TeXLive will work out of the box.
 
-Still, sometimes you will not need all the bells and whistles and there are advantages to smaller build containers.
-For instance, downloading more than one gigabyte can take quite some time long.
-Or you may only have limited disk space available on the runner server.
+Still, sometimes one will not need all the bells and whistles and there are advantages to smaller build containers.
+For instance, the full \TeXLive image requires more than one gigabyte and can take quite some time for downloading.
+Moreover, one may only have limited disk space available on the runner server.
 
-Side remark: If you are not looking to reduce the images themselves but the compile time because you are building many documents, have a look at last year's IoT article~\cite{islandoftex-docker}.
+Side remark: If you are aiming to reduce the compile time (and not the image size itself), because you are building many documents, have a look at last year's IoT article~\cite{islandoftex-docker}.
 
 Back to minimizing the build environment: the most annoying part here might be to find out which packages are actually needed to compile…
-
-So the Island of \TeX{} proudly presents: \DEPP – The DEPendency Printer for \TeXLive\cite{depp}.\footnote{If you are German, do not be surprised if this tool is cleverer than its name suggests.}
-
-As this article should focus on pipelines we won't go into detail on the tool itself but instead show how \DEPP produces a file listing all \TeXLive packages necessary for the build.
+As a consequence, the Island of \TeX{} proudly presents: \DEPP – The DEPendency Printer for \TeXLive\cite{depp}.\footnote{If you are German, do not be surprised if this tool is more clever than its name suggests.}
+As this article should focus on pipelines we will not go into detail on the tool itself but instead show how \DEPP produces a file listing all \TeXLive packages necessary for the build.
 For the example projects these look like:
 
 \begin{tugboatlisting}[breaklines,linenos=false,xleftmargin=0pt,escapeinside=||]{text}
@@ -449,8 +447,8 @@ cm
 
 \subsection{GitHub}
 
-On GitHub there are two actions installing \TeXLive as a part of the workflow.
-Using those it's possible to minimize the container and this will also reduce the build time.
+On GitHub there are (at least) two actions installing \TeXLive as a part of the workflow~\cite{marcel-latex-action,teatimeguest-latex-action}.
+Using those, it is possible to minimize the container and this will also reduce the build time.
 
 \begin{tugboatlisting}{yaml}
 - name: Install TeX Live
@@ -460,14 +458,17 @@ Using those it's possible to minimize the container and this will also reduce th
 \end{tugboatlisting}
 
 This snippet can be used within \directive{steps:} and makes the \directive{container:} directive to be obsolete, so it should be removed.
-The \directive{package_file:} is the path to the \DEPP-output or some manually created list of packages.
+The \directive{package_file:} is the path to the \DEPP output or some manually created list of packages.
+
+Currently, these actions are continuously improved.
+Currently, \action{zauguin/install-texlive} does a very good job at mirror selection, whereas \action{teatimeguest/setup-texlive-action} supports running on historic \TeXLive{} releases.
 
  \subsection{GitLab}
 
- On GitLab the simplified syntax makes this a bit more complex.
+ On GitLab the simplified syntax makes running a minimized \TeXLive{} a bit more complex.
  The \DEPP repository is luckily providing a shell script to install a \TeXLive based on the package file.
  This can be used in the pipelines to modify the container.
- Another option would be to provide a container image which already contains the necessary packages.
+ Another option is to provide a container image which already contains the necessary packages.
  If a self-hosted runner is used, this usually is the best option as caching can be configured to control when the container is rebuilt or updated.
 
 \section{Pipelines for package developers}
@@ -476,7 +477,7 @@ As promised, the advantages of using automated pipelines are even more significa
 In this case, we expect the repository to contain a package and some kind of \command{l3build} configuration.\footnote{Of course, the setup itself also works for other tools, but that is out of scope for this article.}
 
 \subsection{GitHub}
-The \command{latex} command, or \command{latexmk} in the examples, will be replaced by
+The \command{latex} step (calling \command{latexmk} in the examples) is replaced by
 
 \begin{tugboatlisting}{yaml}
 - name: Run l3build
@@ -485,8 +486,8 @@ The \command{latex} command, or \command{latexmk} in the examples, will be repla
 
 This will automatically run all test files according to the \command{l3build} setup.
 As this is within the context of running a package's test suite, the artifacts are totally different.
-We're not really interested in a \acro{PDF} but the test output.
-One of the authors created another action to take care of this:
+We are not really interested in a \acro{PDF} but the test output.
+One of the authors created another action to take care of this~\cite{marcel-l3build-failure}:
 
 \begin{tugboatlisting}{yaml}
 - name: Archive failed test output
@@ -497,7 +498,7 @@ One of the authors created another action to take care of this:
     retention-days: 3
 \end{tugboatlisting}
 
-Apart from uploading the artifacts, this configuration illustrates another important point.
+Apart from uploading the artifacts, this configuration illustrates another important point:
 In contrast to the \acro{PDF} of a document, where we are only interested in the success output, we are less interested in success than failure output for test suites.
 To let GitHub know that we actually are interested in these artifacts, \mintinline{yaml}|if: ${{ always() }}| has been added.
 This will force the step to run also if the previous step failed.
