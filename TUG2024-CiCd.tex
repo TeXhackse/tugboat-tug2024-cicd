@@ -551,6 +551,7 @@ In this case, we expect the repository to contain a package and some kind of \co
 \subsection{GitHub}\setListingIcon{\GitHub}
 The \command{latex} step (calling \command{latexmk} in the examples) is replaced by
 
+% https://github.com/islandoftex/tug2024-workflow-github/blob/main/.github/workflows/main.yaml#L45
 \begin{tugboatlisting}[firstnumber=9,breaklines]{yaml}
 - name: Run l3build
   run: l3build check --show-log-on-error -q -H
