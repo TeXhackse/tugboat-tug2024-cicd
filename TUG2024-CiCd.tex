@@ -166,40 +166,40 @@ not a strict requirement.}
 
 \begin{abstract}
 Using web-based platforms for collaborative editing of \LaTeX{} documents is common these days.
-These tools focus on writing documents and not on creation of templates or packages.
+These tools focus on writing documents and not on the creation of templates or packages.
 Using build servers with automated pipelines is common within software development but can easily be adapted for \TeX{} \& Friends.
 
-This article will show how to get started using automated workflows on platforms like GitHub, Forgejo, or GitLab for document authors as well as \TeX{} developers.
+This article shows how to get started using automated workflows on platforms like GitHub, Forgejo, or GitLab for document authors as well as \TeX{} developers.
 \end{abstract}
 
 \section{Introduction}
-Everything went into or is moving towards the cloud.
+Every kind of software went into or is moving towards the cloud.
 \LaTeX{} is already there for about 10 years and today it's quite common to use a web editor for collaboration and local compilation became the \enquote{nerdy} way.
-But there also is a third variant to compile documents which can be used also to improve package development and in general the stability of \LaTeX:
-adapting DevOps methods, like continuous integration and delivery (\acro{CI/CD}) using automated workflows.
+However there also is a third variant to compile documents which can be used also to improve package development and in general the stability of \LaTeX:
+adapting DevOps methods, like continuous integration and delivery (\acro{CI/CD}), using automated workflows.
 
 As a very rough working definition, let us consider a \acro{CI/CD} workflow as a number of steps to compile a \TeX{} document to \acro{PDF} on some kind of online service that has access to the source files.
 
 \section{Why continuous integration?}
 Having an established workflow usually makes people avoid thinking about changing anything.
-So there have to be reasons why it might be worth reading this article or even integrating the mechanisms into projects.
+Therefore have to be reasons why it might be worth reading this article or even integrating the mechanisms into projects.
 
-Early adopters of continuous integration techniques in the \TeX{} ecosystems tried to follow the current state of OpenSource development and open a door for contributors in the development process.
-For example, the \LaTeX{} Project is currently creating a lot of user interaction via their GitHub projects~\cite{latex3-github} and also takes contributions from which the whole \TeX/\LaTeX{} community will profit.
+Early adopters of \acro{CI/CD} techniques in the \TeX{} ecosystems tried to follow the current state of OpenSource development and open a door for contributors in the development process.
+For example, the \LaTeX{} Project currently creates a lot of user interaction via their GitHub projects~\cite{latex3-github} and also takes contributions from which the whole \TeX/\LaTeX{} community will profit.
 
 But the advantages of these methods extend beyond that. We will focus on some cherry-picked aspects of that as the remainder could probably make an article by itself.
 
 \subsection{Works for me?!}
 Sometimes, I can successfully compile my document on my machine, but my supervisor can't on their own.
-There are tons of reasons why a \TeX{} compilation may succeed on one system and fail on another.
-Running some external continuous integration pipeline will not only illustrate the necessary steps to go from source to the full \acro{PDF}.
+There are tons of reasons why a compilation may succeed on one system and fail on another.
+Running some external \acro{CI/CD} pipeline will not only illustrate the necessary steps to go from source to the full \acro{PDF}.
 It will also help understand if problems are machine specific issues or general ones.
 
 \subsection{Compatibility and regression testing}
 It is possible to run workflows on multiple \TeX{} distributions or versions.
 This can be used to test if there are any issues with some package update before updating a machine to, e.\,g., install the latest MikTeX updates where downgrading may be complicated.\footnote{That's another issue to address … but a different story.}
 
-Additionally, one can also use it to check backwards compatibility, e.\,g., if one collaborator is using a Debian Stable which is stuck on some outdated version.
+Additionally, template developers can also use it to check backwards compatibility, e.\,g., if one collaborator is required to use the version shipped with Debian Stable which is stuck on some outdated version.
 As mentioned, the \LaTeX{} Project Team is already using these techniques and even provides functionality for regression testing within their build system \enquote{l3build} \cite{l3build}.
 
 Using this as a package developer enables a general interface to be used for regression testing.
