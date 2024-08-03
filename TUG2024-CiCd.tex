@@ -328,7 +328,7 @@ The first step looks different from the one we had before.
 It received a name, which is helpful to simplify debugging as GitHub will tell us which step failed.
 
 \item[uses:] is a reference to another action and GitHub's way to reference pre-configured pipelines encapsulating more complex tasks.
-In the example, \action{checkout@v4} refers to a separate repository\cite{github-action-checkout}.
+In the example, \action{checkout@v4} refers to a separate repository~\cite{github-action-checkout}.
 This action takes care of the authentication and some internals, so we do not have to deal with details.
 
 The important part is that only after this action, the following steps start being executed within the root directory of our repository.
@@ -608,14 +608,14 @@ For example if you want to use different artifacts for success and failure, it i
 
 \section{Running locally}
 \setListingIcon{}
-Within the tutorial at TUG there was a short journey to running the pipelines locally.
+Within the tutorial at TUG2024, there was a short journey to running the pipelines locally.
 This might be helpful for debugging as one can control the steps manually or to ensure the local setup matches the one on the server.
 
 These setups usually use Docker.
-For the platforms which use actions there is a tool called \enquote{act} to simplify that process using the Docker API.
+For the platforms which use actions there is a tool called \enquote{act} to simplify that process using the Docker API~\cite{act}.
 %Forgejo is extending this tool and using it for their runners\cite{forgejo-runner}.
 
-GitLab is extending this by the option to simply have a GitLab runner installed locally.
+GitLab extends this by the option to simply have a GitLab runner installed locally.
 This provides the option of running
 
 \begin{tugboatlisting}[linenos=false,xleftmargin=0pt]{shell}
@@ -629,7 +629,7 @@ gitlab-runner exec
 
 \section{This is Continuous Development}
 
-Of course every configuration shown here is only an example and can be extended depending on the project's requirements.
+Of course, every configuration shown here is only an example and can be extended depending on the project's requirements.
 It is possible to run arbitrary commands, which might be necessary especially for complex setups.
 
 For example, when creating magazines, it is possible to continuously create a print and an online version, excerpts of single articles as well as HTML/EPUB output, while the editors only have to wait for the compilation of the article they actually are working on.
@@ -640,11 +640,11 @@ Integrating these structures into more advanced git usage like a useful branchin
 It will reduce frustration for maintainers as some issues do not have to be checked manually.
 
 \section{Conclusion and Call for Action \& Feedback}
-We explained the use of GitHub, Forgejo, and GitLab for compiling \LaTeX{} documents and packages.
+We explained the use of GitHub, Forgejo, and GitLab for compiling \LaTeX{} documents and testing packages.
 We showed how different releases of \TeXLive{} and even different compilers can be used to simplify testing across platforms.
-Also we  took care of being able to access the PDF or the testing results in some way.
+Also we  took care of being able to access the PDF or the testing results.
 
-To increase the stability of all parts of \TeX{} development we hope this will help to more tested packages and even less waste of time while compiling complex setups.
+To increase the stability of all parts of \TeX{} development, we hope this will help to more tested packages and even less waste of time while compiling complex setups.
 In case you maintain some package it would be great if you could now setup some test to check it against the latest version of \TeXLive  or even the current development status.
 This can also be a preparation for next years \TeXLive{} pretest, as the Island of \TeX{} also is creating a Docker image for the pretests.
 In case you are planning to do that and face any issues, we will try to help.
@@ -659,8 +659,8 @@ Contributions to this project are very welcome!
 
 \begin{table*}
 \caption{Template repositories published with this article. The naming scheme is structured as
-\meta{ci-type}\file{\_}\meta{task} adding \enquote{\file{\_minimal}} if the example is not using a pre-packaged Docker Image but includes methods to install packages based on a dependency file as described in \ref{sec:minimize}. –
-All variants listed here have been prepared for at least the 3 platforms mentioned in here.
+\meta{ci-type}\file{\_}\meta{task} adding \enquote{\file{\_minimal}} if the example is not using a pre-packaged Docker Image but includes methods to install packages based on a dependency file as described in Section~\ref{sec:minimize}. –
+All variants listed here have been prepared for at least the 3 platforms mentioned in the article.
 As the URLs quite long, we published the list including links within the paper's repository {\citefield{tug2024-cicd-tugboat-sources}[citeurl]{url}}.
 }
 %(github-actions|gitlab-ci|forgejo-actions)-(compile-document|l3build)(-depp)?}
