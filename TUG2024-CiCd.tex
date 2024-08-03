@@ -200,8 +200,9 @@ Running some external \acro{CI/CD} pipeline will not only illustrate the necessa
 It will also help understand if problems are machine specific issues or general ones.
 
 \subsection{Compatibility and regression testing}
-It is possible to run workflows on multiple \TeX{} distributions or versions.
-This can be used to test if there are any issues with some package update before updating a machine to, e.\,g., install the latest MikTeX updates where downgrading may be complicated.\footnote{That's another issue to address … but a different story.}
+Sometimes, a \LaTeX{} package may break when some of its dependencies are updated.
+With \acro{CI/CD}, one can periodically test wether a package works in any number of TeX distributions and their versions.
+This is especially useful to test if there are any issues with some package update before updating a machine, e.\,g., installing the latest MikTeX updates  where downgrading may be complicated.\footnote{That's another issue to address … but a different story.}
 
 Additionally, template developers can also use it to check backwards compatibility, e.\,g., if one collaborator is required to use the version shipped with Debian Stable which is stuck on some outdated version.
 As mentioned, the \LaTeX{} Project Team is already using these techniques and even provides functionality for regression testing within their build system \enquote{l3build} \cite{l3build}.
