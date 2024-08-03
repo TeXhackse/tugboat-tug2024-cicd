@@ -128,8 +128,12 @@ not a strict requirement.}
 \newcommand*{\file}[1]{\texttt{#1}}
 \newcommand*{\directory}[1]{\texttt{#1}}
 \newcommand*{\containerimage}[1]{\enquote{#1}}
-\newcommand*{\TeXLive}{\acro{\TeX\,Live}\xspace}
-\newcommand*{\DEPP}{\acro{DEPP}\xspace}
+\DeclareRobustCommand{\TeXLive}{\acro{\TeX\,Live}\xspace}
+\DeclareRobustCommand{\DEPP}{\acro{DEPP}\xspace}
+% @Karl: Why is the \ConTeXt definition not robust? by using it that way it's a bit hard to keep it as a logo within the bib file
+
+\let\origConTeXt\ConTeXt
+\DeclareRobustCommand{\ConTeXt}{\origConTeXt}
 
 
 \usepackage{fontawesome5}
@@ -273,7 +277,7 @@ Besides attaching the trigger to some user action, it is possible use time-based
 For all options, it is worth to have a look at the configuration manual \cite{github-actions-ref}.
 The default settings differ for all platforms, but even may be specific for a single instance.
 
-\item[jobs] contains a list of jobs to be run one after another.
+\item[jobs:] contains a list of jobs to be run one after another.
 For example, it is quite common to have one job for compiling a document and another one to make the \acro{PDF} available.
 In this example, there is only one job called \enquote{action-test}.
 
@@ -285,7 +289,7 @@ It includes NodeJS and some tooling to simplify the work using predefined action
 A full list of the readily available runners and detailed description of the images can be found within the GitHub documentation \cite{github-hosted-runners}.
 
 \item[steps:] This is what the workflow should actually do.
-As one can see it is possible to directly enter bash code in there.
+As one can see it is possible to directly enter shell commands in there.
 This example is only creating some output and therefore should run without any issues.
 \end{description}
 
@@ -294,13 +298,13 @@ When combined with an available runner like we do, it is enough to add a yaml co
 After pushing that configuration, the pipeline will start running on all subsequent pushes.
 % Be aware that for repository forks, actions need to be enabled explicitly in the tab \enquote{Actions}. % too specific
 
-The current status of an action, i.e., what step it is currently running or if it already finished, can always be checked having a look at
-\meta{repository url}\url{/actions} e.\,g., for the first of our demo repositories, this can be found at
+The current status of an action, i.\,e., what step it is currently running or if it already finished, can always be checked having a look at
+\meta{repository url}\url{/actions}. For the first of our demo repositories, this can be found at
 {\DeclareFieldFormat{citeurlpostfix}{\url{#1/actions}}\citefield{workflow-github}[citeurlpostfix]{url}}.
 
 \noindent\includegraphics[width=\linewidth,alt={Cropping of a Screenshot from the GitHub Actions status page of a repository. The run was successful. The commit was by @TeXhackse and the commit message says  “Initial setup” followed by a lion emojy.}]{screenshot-pipeline-successful}
 
-The pipeline ran successfully but did not do anything but create some shell output.
+The pipeline ran successfully but did not do anything except create some shell output.
 Hence, we can move on to the next step: building a \LaTeX{} document.
 
 \subsubsection{Actually using \LaTeX}
@@ -318,9 +322,9 @@ Changes only apply after \directive{runs-on}:
 
 
 \begin{description}
-\item[container:] Choosing the IoT \containerimage{texlive-latest} image which provides a full \TeXLive{} + some tools\cite{islandoftex-docker}.
+\item[container:] Choosing the IoT \containerimage{texlive-latest} image which provides a full \TeXLive{} + some tools~\cite{islandoftex-docker}.
 \item[steps:]
-The first step looks different from the one, we had before.
+The first step looks different from the one we had before.
 It received a name, which is helpful to simplify debugging as GitHub will tell us which step failed.
 
 \item[uses:] is a reference to another action and GitHub's way to reference pre-configured pipelines encapsulating more complex tasks.
@@ -335,20 +339,20 @@ So we do not even have to depend on the file name as long as we store files to b
 \end{description}
 
 \subsubsection{Where is the PDF?}
-If the pipeline succeeds, there will be a green checkmark, but we will fail to find the PDF somewhere.
+If the pipeline succeeds, there will be a green checkmark, but we will fail to find the PDF anywhere.
 This is because GitHub does not know which (output) files the user actually wants to see or download.
 Such files are called \enquote{artifacts}, so now we will adjust the action to keep the PDF and upload it to GitHub as an artifact.
 
 % This is a stream-lined variant from https://github.com/islandoftex/tug2024-workflow-document-github/blob/main/.github/workflows/main.yaml#L48
 \inputminted[firstline=13, lastline=17,gobble=5]{yaml}{examples/latex-basic.yml}
 
-After another (successful) run of the pipeline, it is possible to access the \acro{PDF} wrapped within a \file{*.zip} at the run's status page.
+After another successful run of the pipeline, it is possible to access the \acro{PDF} wrapped within a \file{*.zip} at the run's status page.
 Clicking on the run on the actions overview page leads there:
 
 \noindent\includegraphics[width=\linewidth,alt={Cropping of a screenshot. It shows the GitHub artifacts download section. A Packaged artifact called “Documentation” is available.}]{screenshot-artifacts}
 
-Sadly, GitHub currently does not provide an option for individual files without a zip.
-Also it is not possible to have a static link pointing to the latest artifacts.
+Sadly, GitHub currently does not provide an option for individual files.
+Furthermore, it is not possible to have a static link pointing to the latest artifacts.
 Other platforms such as GitLab do provide that feature by default.
 To resolve this and make the \acro{PDF} easier to access on GitHub, it is required to use additional actions.
 The most common way to do it is publishing the \acro{PDF} to an orphan branch.
@@ -630,7 +634,7 @@ It is possible to run arbitrary commands, which might be necessary especially fo
 
 For example, when creating magazines, it is possible to continuously create a print and an online version, excerpts of single articles as well as HTML/EPUB output, while the editors only have to wait for the compilation of the article they actually are working on.
 
-The same goes for study material where we have rendered version including solutions and some without or documents which share a lot of links between each other and therefore require a lot of runs.
+The same goes for study material where we have rendered version including solutions and some without or documents which share lots of cross-references and therefore require a lot of runs.
 
 Integrating these structures into more advanced git usage like a useful branching concept can also help to improve collaboration or simplify the contribution process within OpenSource projects.
 It will reduce frustration for maintainers as some issues do not have to be checked manually.
@@ -655,12 +659,14 @@ Contributions to this project are very welcome!
 
 \begin{table*}
 \caption{Template repositories published with this article. The naming scheme is structured as
-\meta{ci-type}\_\meta{task} adding \enquote{\_minimal} if the example is not using a pre-packaged Docker Image but includes methods to install packages based on a dependency file as described in \ref{sec:minimize}. –
+\meta{ci-type}\file{\_}\meta{task} adding \enquote{\file{\_minimal}} if the example is not using a pre-packaged Docker Image but includes methods to install packages based on a dependency file as described in \ref{sec:minimize}. –
 All variants listed here have been prepared for at least the 3 platforms mentioned in here.
 As the URLs quite long, we published the list including links within the paper's repository {\citefield{tug2024-cicd-tugboat-sources}[citeurl]{url}}.
 }
 %(github-actions|gitlab-ci|forgejo-actions)-(compile-document|l3build)(-depp)?}
 \label{tab:demo-repos}
+
+\medskip
 
 \ExplSyntaxOn
 \cs_set:cpn {latex-Document} {\faCheck}
