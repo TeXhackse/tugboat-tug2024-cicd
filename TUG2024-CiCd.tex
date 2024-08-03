@@ -380,7 +380,7 @@ Consequently, all files have to be moved to a separate directory to be used with
     target_branch: pdf-output
     build_dir: build
   env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 \end{tugboatlisting}
 
 The GitHub token also is necessary to be used for the authentication.
@@ -391,7 +391,7 @@ Otherwise, the run might be successful, but no PDF will appear on the branch.
 \subsection{Differences to Forgejo Actions}
 Forgejo~\cite{forgejo} is another code platform which has the aim to be more open than GitHub.
 It can be self-hosted and now provides mechanism similar to GitHub Actions.
-They will never act in the same way as GitHub's mechanism, but are almost compatible.
+They will never act in the same way as GitHub's mechanism but are almost compatible.
 
 By default, Forgejo searches \directory{.forgejo/workflows/} for configuration files.
 If none are found it will even fall back to look inside the \directory{.github/} directory.
@@ -405,7 +405,7 @@ The provided demo repositories on codeberg.org, which is a Forgejo instance, als
 \subsection{Compiling a document using GitLab CI}
 \setListingIcon{\GitLab}
 
-GitLab CI is not that much different from the previous Actions setups.
+GitLab CI is not that different from the previous Actions setups.
 Actually, it is a bit easier to set up continuous integration here as some steps run automatically.
 For example, it is not necessary to checkout the repository, because this is already done by default.
 
@@ -416,7 +416,7 @@ The configuration file has to be placed within the repository's root directory a
 Here the steps only are a list of commands run after each other. Currently, the list only contains one \command{latexmk} call.
 
 In contrast to GitHub, GitLab is providing an API which allows creating static links to the artifacts.
-Thus, the \file{README.md} of the demo repositories there include a link of the following structure:
+Thus, the file \file{README.md} of the demo repositories there include a link of the following structure:
 
 \begin{FlushLeft}
 \meta{Repository URL}\url{/-/jobs/artifacts/}\meta{branch}\allowbreak\url{/browse?job=}\meta{name of the job}
@@ -434,7 +434,7 @@ Using the example config on one of the demo projects makes it:
 
 We promised one can extend these setups to test using multiple \TeX{} versions or engines.
 Different engines are actually straightforward to include by running additional steps with different commands.
-Of course, it is alternatively possible to use those in separate actions or even workflow files.
+It is also possible to use those in separate actions or even workflow files.
 There is no general way to structure those as it always depends on whether to always run everything or save resources by conditional or sequential execution.
 
 To use different versions of \TeXLive{}, the Island of \TeX{} provides historic images of all but the latest \TeXLive release (which is not historic yet anyway).
@@ -447,21 +447,21 @@ test-on-IoT-texlive:
   strategy:
     matrix:
       image: ["TL2022-historic", "TL2023-historic", "latest"]
-  name: "Test on ${{ matrix.image }}"
+  name: "Test on ${{matrix.image}}"
   container:
-    image: texlive/texlive:${{ matrix.image }}
+    image: texlive/texlive:${{matrix.image}}
   steps:
 \end{tugboatlisting}
 
 \begin{description}
 \item[strategy:] this is used to create a loop over elements.
-In this case, a variable called \mintinline{yaml}|matrix| containing a list of images is used and the content can be accessed within other parts of the file using \mintinline{yaml}|${{ matrix.image }}|.
-Thus, the first run will use TL2022, continue on 2023 and finally run on the latest release.
+In this case, a variable called \mintinline{yaml}|matrix| containing a list of images is used and the content can be accessed within other parts of the file using \mintinline{yaml}|${{matrix.image}}|.
+Thus, the first run will use \TeXLive~2022, continue on 2023 and finally run on the latest release.
 A full list of the provided images can be found at \cite{islandoftex-docker-gitlab}.
 \end{description}
 
 Similarly, on GitLab there is also a matrix feature.
-The following example even illustrates how to run multiple engines each on multiple \TeXLive releases:
+The following example illustrates how to run multiple engines each on multiple \TeXLive releases:
 \setListingIcon{\GitLab}
 
 \begingroup
@@ -490,7 +490,7 @@ check:
 %\textcolor{red}{\small
 %8.\alph{FancyVerbLine}}}
 
-Here the variable is more like a bash variable but can be used the same way.
+Here, the variable is more like a bash variable but can be used the same way.
 
 
 \section{Minimize the build container}
@@ -576,7 +576,7 @@ One of the authors created another action to take care of this~\cite{marcel-l3bu
 % (w/o build matrix, w/o comment for the retention days)
 \begin{tugboatlisting}[firstnumber=11]{yaml}
 - name: Archive failed test output
-  if: ${{ always() }}
+  if: ${{always()}}
   uses: zauguin/l3build-failure-artifacts@v1
   with:
     name: testfiles
@@ -585,7 +585,7 @@ One of the authors created another action to take care of this~\cite{marcel-l3bu
 
 Apart from uploading the artifacts, this configuration illustrates another important point:
 In contrast to the \acro{PDF} of a document, where we are only interested in the success output, we are less interested in success than failure output for test suites.
-To let GitHub know that we actually are interested in these artifacts, \mintinline{yaml}|if: ${{ always() }}| has been added.
+To let GitHub know that we actually are interested in these artifacts, \mintinline{yaml}|if: ${{always()}}| has been added.
 This will force the step to run also if the previous step failed.
 
 \subsection{GitLab}
