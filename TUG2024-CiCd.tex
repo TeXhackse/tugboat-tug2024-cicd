@@ -244,13 +244,16 @@ Thinking of the tasks needed to compile a \LaTeX{} document in any “blank slat
 \item Run \LaTeX{} on the document.
 \end{enumerate}
 %
-\noindent GitHub provides pre-configured actions which are able to combine multiple steps, e.\,g., the latex-action \cite{latex-action}.
-This  is starting another container inside the action container to run \command{latexmk}.
+\noindent GitHub provides pre-configured actions which are able to combine multiple steps.
+For example the latex-action \cite{latex-action} starts another container inside the action container to run \command{latexmk}.
 However, those actions usually limit the configuration options to simplify the interface.
-We are going to elaborate on two variants: Using a container image with a full \TeXLive (this section) and a minimal installation (see Section~\ref{sec:minimize}).
+We are going to elaborate on two variants: Using a container image with a full installation of \TeXLive (this section) and a minimal installation (see Section~\ref{sec:minimize}).
 
-The configuration for an action is done by creating a yaml file within the repositories' subdirectory \file{.github/workflows/hello-world.yml}.
-The name may be chosen individually.
+Creating a YAML file hello-world.yml in the subdirectory .github/workflows/ of the repository".
+
+The configuration for an action is done by creating a YAML file within the repositories' subdirectory \file{.github/workflows/}.
+The filename may be chosen individually.
+Here we use \file{.github/workflows/hello-world.yml}.
 The following code snippet shows a minimal configuration:
 
 %\begin{listing}
@@ -266,8 +269,8 @@ This is important if a project contains multiple workflows.
 \item[on:] This directive indicates conditions under which the workflow will be started.
 In this configuration, the jobs will be started on any push, i.\,e., whenever the repository on the server receives an update.
 
-Besides attaching the trigger to some user action it is possible use time-based settings.
-For all options it is worth to have a look at the configuration manual \cite{github-actions-ref}.
+Besides attaching the trigger to some user action, it is possible use time-based settings.
+For all options, it is worth to have a look at the configuration manual \cite{github-actions-ref}.
 The default settings differ for all platforms, but even may be specific for a single instance.
 
 \item[jobs] contains a list of jobs to be run one after another.
@@ -279,7 +282,7 @@ Runners are the machines to actually execute the jobs defined in a workflow.
 It does not have to be the same server as the one where the repository is hosted.
 In this example, \enquote{ubuntu-latest} indicates running on one of the provided runners by GitHub which is based on Ubuntu.
 It includes NodeJS and some tooling to simplify the work using predefined actions.
-A full list of the readily available runners and detailed description of the images can be found at \cite{github-hosted-runners}.
+A full list of the readily available runners and detailed description of the images can be found within the GitHub documentation \cite{github-hosted-runners}.
 
 \item[steps:] This is what the workflow should actually do.
 As one can see it is possible to directly enter bash code in there.
