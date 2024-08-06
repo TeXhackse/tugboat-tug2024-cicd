@@ -105,7 +105,7 @@
 	  }%
 }
 
-\DeclareFieldFormat{url}{\ifvmode\else\newline\fi\tbsurl{#1}}
+\DeclareFieldFormat{url}{\ifvmode\else\allowbreak\fi\tbsurl{#1}}
 \DeclareFieldFormat[article]{pages}{#1}
 
 %Don't show urldate
@@ -584,3 +584,25 @@
   \usebibmacro{finentry}}
 
 \let\finalnamedelim\multinamedelim
+
+% spacing adjustments
+
+\defbibenvironment{bibliography}
+{\frenchspacing\BibJustification\list
+{\printfield[labelnumberwidth]{labelnumber}}
+{
+\@listi
+\setlength{\labelwidth}{\labelnumberwidth}%
+\setlength{\leftmargin}{\labelwidth}%
+\setlength{\labelsep}{.5em}%
+\addtolength{\leftmargin}{\labelsep}%
+}%
+\renewcommand*{\makelabel}[1]{\hss##1}}
+{\endlist}
+{\item}
+
+\defbibheading{bibliography}[\refname]{%
+\let\TB@startsection\TB@safe@startsection
+\section*{#1}%
+\@mkboth{\abx@MakeMarkcase{#1}}{\abx@MakeMarkcase{#1}}
+}
