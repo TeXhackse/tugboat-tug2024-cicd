@@ -127,6 +127,9 @@
 	\iffieldundef{url}{.}{}%
 }
 
+\renewbibmacro*{finentry}{\finentry\iffieldundef{usere}{}{\newpage}}
+
+
 \renewbibmacro*{in:}{%
 	\ifentrytype{article}{}{%
 	  \bibstring{in}%
@@ -141,6 +144,23 @@
 \DeclareFieldFormat{urldate}{\gobble{#1}}
 \renewbibmacro*{url+urldate}{\usebibmacro{url}}
 \renewbibmacro*{urldate}{}
+
+\newbibmacro*{doi+eprint+url}{%
+  \iftoggle{bbx:doi}
+    {%
+    \iffieldundef{userf}{}{\newline}% if urlnewline is set we can trigger a newline in here as requested by Karl
+    \printfield{doi}}
+    {}%
+  \newunit\newblock
+  \iftoggle{bbx:eprint}
+    {\usebibmacro{eprint}}
+    {}%
+  \newunit\newblock
+  \iftoggle{bbx:url}
+    {%
+    \iffieldundef{userf}{}{\newline}% if urlnewline is set we can trigger a newline in here as requested by Karl
+    \usebibmacro{url+urldate}}
+    {}}
 
 \renewbibmacro*{volume+number+eid}{%
   \printfield{volume}%
