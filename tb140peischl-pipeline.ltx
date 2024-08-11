@@ -430,7 +430,6 @@ For instance, using the example configuration on one of the demo projects result
 % url is spacey, with unwanted and unneeded space around periods,
 % slashes, etc.  -kb
 \begin{FlushLeft}
-%{\tt https://gitlab.com/island}\\ % shows non-spacey url for comparison
 {\DeclareFieldFormat{citeurlpostfix}{\nolinkurl{#1/-/jobs/artifacts/main/browse?job=run-LaTeX}}\citefield{workflow-document-gitlab}[citeurlpostfix]{url}}
 \end{FlushLeft}
 

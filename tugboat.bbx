@@ -14,6 +14,10 @@
   }%
 }
 
+% Don't add extra space in urls
+\biburlbigskip=0mu\relax
+\setcounter{biburlnumpenalty}{9000}
+
 \ExplSyntaxOn
 \newrobustcmd{\MakeTitleCase}[1]{%
 \ifthenelse{\ifcurrentfield{booktitle}\OR\ifcurrentfield{booksubtitle}%
