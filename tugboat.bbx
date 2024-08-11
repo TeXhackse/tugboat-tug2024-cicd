@@ -1,5 +1,20 @@
 \RequireBibliographyStyle{numeric-comp}
 
+% can you please give me a "urlnewline" field? If set, it just forces a \newline before the url (or doi).
+% Can you please also give me a "newpage" field, which outputs a \newpage after the item is finished?
+
+% sourcemap to map urlnewline to userf and  newpage field to usere to avoid having to declare own structures
+\DeclareSourcemap{
+  \maps[datatype=bibtex]{
+    \map{
+      \step[fieldsource=urlnewline]
+      \step[fieldset=userf, origfieldval]
+      \step[fieldsource=newpage]
+      \step[fieldset=usere, origfieldval]
+    }
+  }
+}
+
 % from ieee.bbx
 \newcommand*\bbx@colon@search[2]{%
 \bbx@colon@search@aux#1#2: \stop
