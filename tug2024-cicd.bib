@@ -48,10 +48,10 @@ url={https://code.forgejo.org/forgejo/runner}
 }
 
 @article{l3build-beginner,
-  title = {l3build The beginner’s guide},
+  title = {\texttt{l3build}: The beginner’s guide},
   volume = {43},
   ISSN = {0896-3207},
-  url = {http://doi.org/10.47397/tb/43-1/tb133wright-l3build},
+  url = {https://doi.org/10.47397/tb/43-1/tb133wright-l3build},
   DOI = {10.47397/tb/43-1/tb133wright-l3build},
   number = {1},
   journal = {TUGboat},
@@ -62,20 +62,24 @@ url={https://code.forgejo.org/forgejo/runner}
 }
 
 @online{l3build,
-title={l3build – A testing and building system for (La)TeX},
-author={{The \LaTeX{} Project}},
+sortname={LaTeX.b},
+title={l3build{\Dash}A testing and building system for {\AllTeX}},
+author={{\LaTeX{} Project}},
 url={https://ctan.org/pkg/l3build}
 }
 
 @online{latexmk,
-title={latexmk – Fully automated \LaTeX{} document generation},
+title={latexmk{\Dash}Fully automated \LaTeX{} document generation},
 author={Collins, John},
 url={https://ctan.org/pkg/latexmk}
 }
 
+% presort={Island of TeX DEPP} ends up sorting this entry first, i.e., [1].
+% sortname={Island of TeX DEPP} ends up making it second to last, i.e., [18].
+% Using braces or backslashes in these fields gets Perl errors. -kb
 @online{depp,
-title={DEPP – Dependency Printer for \TeX{} Live},
-author={{The Island of \TeX}},
+title={DEPP{\Dash}Dependency Printer for {\TeX} {L}ive},
+author={{Island of \TeX}},
 url={https://gitlab.com/islandoftex/texmf/depp}
 }
 
@@ -92,12 +96,14 @@ author={Forgejo},
 url={https://forgejo.org/docs/latest/user/actions/}
 }
 
+% {\TeXLive} in the bib ends up expanding \TeX and printing "live".
+% Mystery. -kb
 @article{islandoftex-docker,
-  title = {Living in containers – on \TeX\,Live (and \ConTeXt) in a Docker setting},
-  author = {{The Island of \TeX}},
+  title = {Living in containers{\Dash}on {\TeX} {L}ive (and {\ConTeXt}) in a {D}ocker setting},
+  author = {{Island of \TeX}},
   volume = {44},
   ISSN = {0896-3207},
-  url = {http://doi.org/10.47397/tb/44-2/tb137island-docker},
+  url = {https://doi.org/10.47397/tb/44-2/tb137island-docker},
   DOI = {10.47397/tb/44-2/tb137island-docker},
   number = {2},
   journal = {TUGboat},
@@ -107,12 +113,12 @@ url={https://forgejo.org/docs/latest/user/actions/}
 }
 
 @article{islandoftex-docker-short,
-  title = {Providing Docker images for \TeXLive
-  and \ConTeXt},
-  author = {{The Island of \TeX}},
+  title = {Providing {D}ocker images for {\TeX} {L}ive
+  and {\ConTeXt}},
+  author = {{Island of \TeX}},
   volume = {40},
   ISSN = {0896-3207},
-  url = {https://www.tug.org/TUGboat/tb40-3/tb126island-docker.pdf},
+  url = {https://tug.org/TUGboat/tb40-3/tb126island-docker.pdf},
   number = {3},
   journal = {TUGboat},
   publisher = {TeX Users Group},
@@ -122,31 +128,33 @@ url={https://forgejo.org/docs/latest/user/actions/}
 
 @online{marcel-latex-action,
 author={Krüger, Marcel},
-title={{zauguin/install-texlive}},
+title={{{z}auguin/install-texlive} repository},
 url={https://github.com/zauguin/install-texlive}
 }
 
 @online{marcel-l3build-failure,
 author={Krüger, Marcel},
-title={{zauguin/l3build-failure-artifacts}},
+title={{{z}auguin/l3build-failure-artifacts} repository},
 url={https://github.com/zauguin/l3build-failure-artifacts}
 }
 
 
 @online{teatimeguest-latex-action,
-title={{teatimeguest/setup-texlive-action}},
+title={{teatimeguest/setup-texlive-action} repository},
 url={https://github.com/teatimeguest/setup-texlive-action}
 }
 
 @online{latex3-github,
-title={Github Organization of the \LaTeX{} Project},
+sortname={LaTeX.a},
+author={{\LaTeX{} Project}},
+title={GitHub organization},
 url={https://github.com/latex3/}
 }
 
 
 @online{islandoftex-docker-gitlab,
-title={Gitlab Repository: \TeX\,Live docker image},
-author={{The Island of \TeX{}}},
+title={GitLab Repository: \TeX\,Live {D}ocker image},
+author={{Island of \TeX{}}},
 url={https://gitlab.com/islandoftex/images/texlive},
 urldate={2024-07-20},
 }
@@ -174,36 +182,41 @@ url={https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-gith
 @online{latex-action,
 	title={latex-action},
 	subtitle={GitHub Action to compile \LaTeX{} documents},
-	author={Cheng XU},
+	author={Cheng Xu},
 	url={https://github.com/xu-cheng/latex-action/}
 }
 
+% V4?
 @online{github-action-checkout,
-title={Checkout V4},
+title={Checkout action},
 author={{GitHub and contributors}},
 url={https://github.com/actions/checkout/}
 }
 
 % todo add data, sort repos
 
-%title={GitHub Workflow template for \LaTeX{} document compilation},
 @online{workflow-document-github,
-author={{The Island of \TeX}},
+author={{Island of \TeX}},
 url={https://github.com/islandoftex/tug2024-workflow-document-github},
 }
 
+% using title={Git{H}ub Workflow...} ends up printing GitHub Wo rkflow
+% with a spurious space. Trying xWorkflow as a test printed "xW orkflow".
+% Mystery. -k
 @online{workflow-github,
-author={{The Island of \TeX}},
+author={{Island of \TeX}},
+title={{GitHub} Workflow template for {\LaTeX} package compilation},
 url={https://github.com/islandoftex/tug2024-workflow-github},
 }
 
 @online{workflow-gitlab,
-author={{The Island of \TeX}},
+author={{Island of \TeX}},
 url={https://gitlab.com/islandoftex/texmf/tug2024-workflow-document-gitlab}
 }
 
 @online{workflow-document-gitlab,
-author={{The Island of \TeX}},
+author={{Island of \TeX}},
+title={{GitLab} Workflow template for {\LaTeX} document compilation},
 url={https://gitlab.com/islandoftex/texmf/tug2024-workflow-document-gitlab}
 }
 
@@ -218,12 +231,12 @@ url={https://codeberg.org/TeXhackse/tug2024-workflow-document-gitlab}
 }
 
 @online{forgejo-runner-config,
-author={{Codeberg Docs Contributors}},
+author={{Codeberg doc contributors}},
 url={https://docs.codeberg.org/ci/actions/}
 }
 
 @online{tug2024-cicd-tugboat-sources,
-title={Source to this paper including Links to additional resources},
+title={Source to this paper, and links to additional resources},
 author={Peischl, Marei and Krüger, Marcel and Kopp, Oliver},
 url={https://tug.org/l/peischl-cicd2024}
 }

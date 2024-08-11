@@ -22,6 +22,9 @@ not a strict requirement.}
 
 \documentclass[final]{ltugboat}
 \def\ldots{\tubdots\allowbreak}
+\makeactive …
+\def…{\ldots}
+\def\CI{\acro{CI}}
 \PassOptionsToPackage{draft}{minted}
 \usepackage{minted}
 \usepackage{xcolor}
@@ -30,7 +33,7 @@ not a strict requirement.}
 \usepackage[hidelinks,pdfa]{hyperref}
 \usepackage[autostyle]{csquotes}
 \usepackage{ragged2e}
-
+\def\url{\tburl}
 
 \usepackage[bibstyle=tugboat]{biblatex}
 \addbibresource{tug2024-cicd.bib}
@@ -124,16 +127,12 @@ not a strict requirement.}
 
 \newcommand*{\action}[1]{\texttt{#1}}
 \newcommand*{\command}[1]{\texttt{#1}}
-\newcommand*{\directive}[1]{\textbf{\detokenize{#1}}}
+\newcommand*{\directive}[1]{\textbf{{#1}}} %\detokenize
 \newcommand*{\file}[1]{\texttt{#1}}
-\newcommand*{\directory}[1]{\texttt{#1}}
+\newcommand*{\directory}[1]{\tbcodebreak{#1}}
 \newcommand*{\containerimage}[1]{\enquote{#1}}
-\DeclareRobustCommand{\TeXLive}{\acro{\TeX\,Live}\xspace}
-\DeclareRobustCommand{\DEPP}{\acro{DEPP}\xspace}
-% @Karl: Why is the \ConTeXt definition not robust? by using it that way it's a bit hard to keep it as a logo within the bib file
-
-\let\origConTeXt\ConTeXt
-\DeclareRobustCommand{\ConTeXt}{\origConTeXt}
+\newcommand*{\TeXLive}{\TeX\,Live\xspace}
+\newcommand*{\DEPP}{\acro{DEPP}\xspace}
 
 
 \usepackage{fontawesome5}
@@ -170,60 +169,59 @@ not a strict requirement.}
 
 \begin{abstract}
 Using web-based platforms for collaborative editing of \LaTeX{} documents is common these days.
-These tools focus on writing documents and not on the creation of templates or packages.
-Using build servers with automated pipelines is common within software development but can easily be adapted for \TeX{} \& Friends.
+These tools focus on writing documents and not on creation of templates or packages.
+Using build servers with automated pipelines is common within software development but can easily be adapted for \TeX{} \& friends.
 
-This article shows how to get started using automated workflows on platforms like GitHub, Forgejo, or GitLab for document authors as well as \TeX{} developers.
+This article will show how to get started using automated workflows on platforms like GitHub, Forgejo, or GitLab for document authors as well as \TeX{} developers.
 \end{abstract}
 
 \section{Introduction}
-Every kind of software went into or is moving towards the cloud.
+Everything has become available in or is moving towards the cloud.
 \LaTeX{} is already there for about 10 years and today it's quite common to use a web editor for collaboration and local compilation became the \enquote{nerdy} way.
-However there also is a third variant to compile documents which can be used also to improve package development and in general the stability of \LaTeX:
-adapting DevOps methods, like continuous integration and delivery (\acro{CI/CD}), using automated workflows.
+But there also is a third variant to compile documents which can be used also to improve package development and in general the stability of \LaTeX:
+adapting DevOps methods, like continuous integration and delivery (\acro{CI/CD}) using automated workflows.
 
 As a very rough working definition, let us consider a \acro{CI/CD} workflow as a number of steps to compile a \TeX{} document to \acro{PDF} on some kind of online service that has access to the source files.
 
 \section{Why continuous integration?}
 Having an established workflow usually makes people avoid thinking about changing anything.
-Therefore have to be reasons why it might be worth reading this article or even integrating the mechanisms into projects.
+So there have to be reasons why it might be worth reading this article, let alone integrating the mechanisms into projects.
 
-Early adopters of \acro{CI/CD} techniques in the \TeX{} ecosystems tried to follow the current state of OpenSource development and open a door for contributors in the development process.
-For example, the \LaTeX{} Project currently creates a lot of user interaction via their GitHub projects~\cite{latex3-github} and also takes contributions from which the whole \TeX/\LaTeX{} community will profit.
+Early adopters of continuous integration techniques in the \TeX{} ecosystems tried to follow the current state of open source development and open doors for contributors in the development process.
+For example, the \LaTeX{} Project is currently welcoming a lot of user interaction via their GitHub projects~\cite{latex3-github} and also takes contributions from which the whole \AllTeX{} community will profit.
 
-But the advantages of these methods extend beyond that. We will focus on some cherry-picked aspects of that as the remainder could probably make an article by itself.
+But the advantages of these methods extend beyond that. We will focus on some cherry-picked aspects as the remainder could probably be an article by itself.
 
 \subsection{Works for me?!}
-Sometimes, I can successfully compile my document on my machine, but my supervisor can't on their own.
-There are tons of reasons why a compilation may succeed on one system and fail on another.
-Running some external \acro{CI/CD} pipeline will not only illustrate the necessary steps to go from source to the full \acro{PDF}.
-It will also help understand if problems are machine specific issues or general ones.
+Sometimes, I can successfully compile my document on my machine, but my supervisor can't on theirs.
+There are many reasons why a \TeX{} compilation may succeed on one system and fail on another.
+Running some external continuous integration pipeline will not only illustrate the necessary steps to go from source to the full \acro{PDF},
+it will also help understand if problems are machine-specific or general.
 
 \subsection{Compatibility and regression testing}
-Sometimes, a \LaTeX{} package may break when some of its dependencies are updated.
-With \acro{CI/CD}, one can periodically test wether a package works in any number of TeX distributions and their versions.
-This is especially useful to test if there are any issues with some package update before updating a machine, e.\,g., installing the latest MikTeX updates  where downgrading may be complicated.\footnote{That's another issue to address … but a different story.}
+With \acro{CI/CD},
+it is possible to run workflows on multiple \TeX{} distributions or versions.
+This can be used to test if there are issues with some package update before updating a machine to, e.\,g., the latest MiK\TeX\ updates where downgrading may be complicated.\footnote{That's another issue to address …\ but a different story.}
 
-Additionally, template developers can also use it to check backwards compatibility, e.\,g., if one collaborator is required to use the version shipped with Debian Stable which is stuck on some outdated version.
-As mentioned, the \LaTeX{} Project Team is already using these techniques and even provides functionality for regression testing within their build system \enquote{l3build} \cite{l3build}.
+Additionally, one can also use it to check backwards compatibility, e.\,g., if one collaborator is using a Debian stable version which has only some outdated version.
+As mentioned, the \LaTeX{} Project Team is already using these techniques and even provides functionality for regression testing within their build system, l3build \cite{l3build,l3build-beginner}.
 
-Using this as a package developer enables a general interface to be used for regression testing.
-This allows to avoid some of the bugs which otherwise would be published and should be found by a user.
-Furthermore, it can be used to avoid inconsistent structures, e.\,g., one of the authors recently found that tons of packages and files within \TeXLive{} do not have a proper version number set within the code.
+Using \acro{CI/CD} as a package developer enables a general interface to be used for regression testing.
+This allows for avoiding some of the bugs which otherwise would be published and found by a user.
+Furthermore, it can be used to avoid inconsistent structures, e.\,g., one of the authors recently found that numerous packages and files within \TeXLive{} do not have a proper version number set within the code.
 
 \section{Structure of this tutorial}
 
 The idea is to introduce readers to the basics of setting up automated workflows on GitHub, Forgejo, and GitLab.
-
 This tutorial mainly addresses two groups of users:
 
 \begin{enumerate}
-\item authors focusing on typesetting actual content including those collaborating on a document, and
+\item authors focusing on typesetting actual content, including those collaborating on a document, and
 \item package or template developers who provide their work to be used by the first group.
 \end{enumerate}
 
 The second group obviously can also  use workflows of the first, e.\,g., for typesetting documentation.
-So developers usually use an extended version of the setup provided for the authors.
+So developers usually use an extended version of the setup provided for authors.
 
 As all platforms covered by this article are related to the git version control system, we expect the project to be some kind of git repository.
 In case the reader does not yet use git, there is a little bit of information attached to this tutorial.
@@ -231,16 +229,16 @@ Using that, it would be possible to use git without even noticing as it is attac
 
 Because the \LaTeX{} project is using GitHub, we are going to start with a detailed explanation of GitHub Actions and create a matching setup on the other platforms afterwards.
 All workflows are available for customization in the template repositories listed in Table \ref{tab:demo-repos}.
-Within this article the listings are marked by Icons to not confuse readers as the platform is switched multiple times to show the differences.
-\faGithub{} is used to indicate the listing belongs to Github Actions, whereas \faGitlab{} marks the GitLab CI variant.
+Within this article the listings are marked by icons to not confuse readers as the platform is switched multiple times to show the differences.
+\faGithub{} is used to indicate the listing belongs to GitHub Actions, whereas \faGitlab{} marks the GitLab \CI\ variant.
 
-\section{Compiling a document in a CI pipeline}
+\section{Compiling a document in a \CI\ pipeline}
 
 \subsection{First steps with GitHub Actions}
 \setListingIcon{\GitHub}
 
 To get started, we need a git repository somehow hosted on GitHub.
-It does not have to be a public one.
+It does not have to be public.
 
 Thinking of the tasks needed to compile a \LaTeX{} document in any “blank slate” environment, we have to do the following:
 
@@ -249,16 +247,13 @@ Thinking of the tasks needed to compile a \LaTeX{} document in any “blank slat
 \item Run \LaTeX{} on the document.
 \end{enumerate}
 %
-\noindent GitHub provides pre-configured actions which are able to combine multiple steps.
-For example the latex-action \cite{latex-action} starts another container inside the action container to run \command{latexmk}.
-However, those actions usually limit the configuration options to simplify the interface.
-We are going to elaborate on two variants: Using a container image with a full installation of \TeXLive (this section) and a minimal installation (see Section~\ref{sec:minimize}).
+\noindent GitHub provides pre-configured actions which are able to combine multiple steps, e.\,g., the \enquote{latex-action} action \cite{latex-action};
+this starts another container inside the action container to run \command{latexmk}.
+However, these and other actions typically limit the configuration options to simplify the interface.
+We are going to elaborate on two variants: Using a container image with a full \TeXLive (this section) and a minimal installation (see Section~\ref{sec:minimize}).
 
-Creating a YAML file hello-world.yml in the subdirectory .github/workflows/ of the repository".
-
-The configuration for an action is done by creating a YAML file within the repositories' subdirectory \file{.github/workflows/}.
-The filename may be chosen individually.
-Here we use \file{.github/workflows/hello-world.yml}.
+The configuration for an action is done by creating a yaml file within the repositories' subdirectory \file{.github/workflows/hello-world.yml}.
+The filename may be chosen at will.
 The following code snippet shows a minimal configuration:
 
 %\begin{listing}
@@ -274,48 +269,51 @@ This is important if a project contains multiple workflows.
 \item[on:] This directive indicates conditions under which the workflow will be started.
 In this configuration, the jobs will be started on any push, i.\,e., whenever the repository on the server receives an update.
 
-Besides attaching the trigger to some user action, it is possible use time-based settings.
-For all options, it is worth to have a look at the configuration manual \cite{github-actions-ref}.
-The default settings differ for all platforms, but even may be specific for a single instance.
+Besides attaching the trigger to some user action it is possible to use time-based settings.
+For all options it is worth having a look at the configuration manual \cite{github-actions-ref}.
+The default settings differ for all platforms, and may be specific for a single instance.
 
 \item[jobs:] contains a list of jobs to be run one after another.
 For example, it is quite common to have one job for compiling a document and another one to make the \acro{PDF} available.
 In this example, there is only one job called \enquote{action-test}.
 
 \item[runs-on:] This value corresponds to a runner setup.
-Runners are the machines to actually execute the jobs defined in a workflow.
+Runners are the systems that actually execute the jobs defined in a workflow.
 It does not have to be the same server as the one where the repository is hosted.
 In this example, \enquote{ubuntu-latest} indicates running on one of the provided runners by GitHub which is based on Ubuntu.
-It includes NodeJS and some tooling to simplify the work using predefined actions.
-A full list of the readily available runners and detailed description of the images can be found within the GitHub documentation \cite{github-hosted-runners}.
+It includes Node\acro{JS} and some tooling to simplify the work using predefined actions.
+A full list of the readily available runners and detailed description of the images can be found at \cite{github-hosted-runners}.
 
 \item[steps:] This is what the workflow should actually do.
-As one can see it is possible to directly enter shell commands in there.
-This example is only creating some output and therefore should run without any issues.
+As one can see it is possible to directly enter (ba)sh code in there,
+and use \tbUTF-8. 
+This example merely echoes a string to stdout and therefore should run without any issues.
 \end{description}
 
 On GitHub, actions are automatically enabled for new repositories.
-When combined with an available runner like we do, it is enough to add a yaml configuration file to the repository to see the effect.
+When combined with an available runner as we do here, it is enough to add a yaml configuration file to the repository to see the effect.
 After pushing that configuration, the pipeline will start running on all subsequent pushes.
 % Be aware that for repository forks, actions need to be enabled explicitly in the tab \enquote{Actions}. % too specific
 
-The current status of an action, i.\,e., what step it is currently running or if it already finished, can always be checked having a look at
-\meta{repository url}\url{/actions}. For the first of our demo repositories, this can be found at
-{\DeclareFieldFormat{citeurlpostfix}{\url{#1/actions}}\citefield{workflow-github}[citeurlpostfix]{url}}.
+The current status of an action, i.e., what step it is currently running or if it has already finished, can always be checked by having a look at
+\meta{repository url}\tbcode{/actions}; e.\,g., for the first of our demo repositories, this can be found at
+{\DeclareFieldFormat{citeurlpostfix}{\url{#1/actions}}\citefield{workflow-github}[citeurlpostfix]{url}}. It looks like this:
 
-\noindent\includegraphics[width=\linewidth,alt={Cropping of a Screenshot from the GitHub Actions status page of a repository. The run was successful. The commit was by @TeXhackse and the commit message says  “Initial setup” followed by a lion emojy.}]{screenshot-pipeline-successful}
+\smallskip
+\noindent\includegraphics[width=\linewidth,alt={Cropping of a Screenshot from the GitHub Actions status page of a repository. The run was successful. The commit was by @TeXhackse and the commit message says  “Initial setup” followed by a lion emoji.}]{screenshot-pipeline-successful}
+\par\smallskip
 
 The pipeline ran successfully but did not do anything except create some shell output.
 Hence, we can move on to the next step: building a \LaTeX{} document.
 
-\subsubsection{Actually using \LaTeX}
+\subsubsection{GitHub Actions using \LaTeX}
 
 Actions are fundamentally based on isolated containers of software, which are run using Docker.
-Luckily, some of us live on the Island of \TeX{} and maintain images we could make use of here.\footnote{Special thanks to the other islanders at that point!}
+Luckily, some of us live on the Island of \TeX{} (IoT) and maintain images we can make use of here.\footnote{Special thanks to the other islanders at that point!}
 The setup of the images was described within~\cite{islandoftex-docker-short}.
 
 The first part of the workflow will stay the same for the moment.
-Changes only apply after \directive{runs-on}:
+Changes apply only after \directive{runs-on}:
 
 % This is a stripped down variant of https://github.com/islandoftex/tug2024-workflow-document-github/blob/main/.github/workflows/main.yaml#L63
 % Olly thinks, it is OK to keep like that. Line numbers are consistent to the hello-world.yml above.
@@ -323,51 +321,54 @@ Changes only apply after \directive{runs-on}:
 
 
 \begin{description}
-\item[container:] Choosing the IoT \containerimage{texlive-latest} image which provides a full \TeXLive{} + some tools~\cite{islandoftex-docker}.
+\item[container:] Choose the IoT \containerimage{texlive-latest} image which provides a full \TeXLive{} and some tools \cite{islandoftex-docker}.
 \item[steps:]
 The first step looks different from the one we had before.
-It received a name, which is helpful to simplify debugging as GitHub will tell us which step failed.
+It's given a name, \enquote{Checkout repository}, which is helpful to simplify debugging as GitHub will tell us which step failed.
 
 \item[uses:] is a reference to another action and GitHub's way to reference pre-configured pipelines encapsulating more complex tasks.
 In the example, \action{checkout@v4} refers to a separate repository~\cite{github-action-checkout}.
-This action takes care of the authentication and some internals, so we do not have to deal with details.
+This action takes care of the authentication and some internals, so we do not have to deal with those details.
 
-The important part is that only after this action, the following steps start being executed within the root directory of our repository.
+A crucial point is that only after this action are the following steps begun to be executed, within the root directory of our repository.
 
-The second step is kind of the same as in the first example, but this time we run \command{latexmk}~\cite{latexmk} using \command{lualatex}.
-By default, this will run on all \file{*.tex} files within the root directory.
-So we do not even have to depend on the file name as long as we store files to be included within subdirectories.
+\item[second step:]
+The second step is also given a name (\enquote{Run latexmk}), and then uses the same \directive{run:} directive as our first example, but this time we run \command{latexmk}~\cite{latexmk} with the option \command{--lualatex} (to use the Lua\LaTeX\ engine, as you might guess).
+By default, \command{latexmk} will operate on all \file{*.tex} files within the root directory.
+So we do not even have to depend on the file name, as long as we store any files to be included within subdirectories.
 \end{description}
 
-\subsubsection{Where is the PDF?}
-If the pipeline succeeds, there will be a green checkmark, but we will fail to find the PDF anywhere.
-This is because GitHub does not know which (output) files the user actually wants to see or download.
-Such files are called \enquote{artifacts}, so now we will adjust the action to keep the PDF and upload it to GitHub as an artifact.
+\subsubsection{Where is the \PDF?}
+If the pipeline succeeds, there will be a green checkmark, but we will fail to find the \PDF\ somewhere.
+This is because GitHub cannot know which (output) files the user actually wants to see or download.
+Such files are called \enquote{artifacts}, so now we will add another step to the action to keep the \PDF\ and upload it to GitHub as a so-called \enquote{artifact}:
 
 % This is a stream-lined variant from https://github.com/islandoftex/tug2024-workflow-document-github/blob/main/.github/workflows/main.yaml#L48
 \inputminted[firstline=13, lastline=17,gobble=5]{yaml}{examples/latex-basic.yml}
 
-After another successful run of the pipeline, it is possible to access the \acro{PDF} wrapped within a \file{*.zip} at the run's status page.
+After another (successful) run of the pipeline, it is possible to access the \acro{PDF} wrapped within a \file{*.zip} at the run's status page.
 Clicking on the run on the actions overview page leads there:
 
-\noindent\includegraphics[width=\linewidth,alt={Cropping of a screenshot. It shows the GitHub artifacts download section. A Packaged artifact called “Documentation” is available.}]{screenshot-artifacts}
+\smallskip
+\noindent\includegraphics[width=\linewidth,alt={Cropping of a screenshot. It shows the GitHub artifacts download section. A packaged artifact called “Documentation” is available.}]{screenshot-artifacts}
+\par\smallskip
 
-Sadly, GitHub currently does not provide an option for individual files.
-Furthermore, it is not possible to have a static link pointing to the latest artifacts.
-Other platforms such as GitLab do provide that feature by default.
+Sadly, GitHub currently does not provide an option for individual files without a zip.
+Also it is not possible to have a static link pointing to the latest artifacts.
+(Other platforms such as GitLab do provide that feature by default.)
 To resolve this and make the \acro{PDF} easier to access on GitHub, it is required to use additional actions.
 The most common way to do it is publishing the \acro{PDF} to an orphan branch.
 Usually this mechanism is used to create web pages and is called \enquote{github-pages}.
 
 To be able to write in the repository, it is necessary to adjust the permissions.
-GitHub is providing an interface within the yaml configuration:
+GitHub provides an interface within the yaml configuration:
 
 \begin{tugboatlisting}[firstnumber=8]{yaml}
 permissions:
   contents: write
 \end{tugboatlisting}
 
-This has to be added to the job which should upload the pdf.
+This has to be added to the job which should upload the \PDF.
 Additionally, most actions which can be used for uploading artifacts to separate branches request a directory instead of a file.
 Consequently, all files have to be moved to a separate directory to be used with these actions.
 
@@ -381,64 +382,67 @@ Consequently, all files have to be moved to a separate directory to be used with
     target_branch: pdf-output
     build_dir: build
   env:
-    GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 \end{tugboatlisting}
 
-The GitHub token also is necessary to be used for the authentication.
-Otherwise, the run might be successful, but no PDF will appear on the branch.
+The GitHub token on the last line is required for authentication.
+Otherwise, the run might be successful, but no \PDF\ will appear on the branch.
 %During the preparation of the workshow and this article we've been testing a lot of the uploading actions.
 %Actually all somehow do the same, there are just differences in how to configure.
 
-\subsection{Differences to Forgejo Actions}
+\subsection{Differences with Forgejo Actions}
 Forgejo~\cite{forgejo} is another code platform which has the aim to be more open than GitHub.
-It can be self-hosted and now provides mechanism similar to GitHub Actions.
-They will never act in the same way as GitHub's mechanism but are almost compatible.
+It can be self-hosted and provides mechanisms similar to GitHub Actions.
+They will never act in exactly the same way as GitHub's mechanisms, but are almost compatible.
 
-By default, Forgejo searches \directory{.forgejo/workflows/} for configuration files.
-If none are found it will even fall back to look inside the \directory{.github/} directory.
-The only issue you would probably face from just reusing a GitHub setup is that there are no hosted runners on most instances.
+By default, Forgejo first searches \directory{.forgejo/workflows/} for configuration files.
+If none are found it will fall back to look inside the \directory{.github/} directory.
+The only issue you would probably face from simply reusing a GitHub setup is that there are no hosted runners on most instances.
 Even if there are runners available, they will probably be different from GitHub's.
 
-However, in case you can configure a runner yourself and use the same labels as the GitHub runner uses (described in~\cite{forgejo-runner-config}), it is possible to use the same workflow configurations on both.
-The provided demo repositories on codeberg.org, which is a Forgejo instance, also explain how the runners used there are configured.
+However, if you can configure a runner yourself and use the same labels as the GitHub runner uses (described in~\cite{forgejo-runner-config}), it is possible to use the same workflow configurations on both.
+The provided demo repositories on \url{codeberg.org}, which is a Forgejo instance, also explain how the runners used there are configured.
 % TODO: link to codeberg?
 
-\subsection{Compiling a document using GitLab CI}
+\subsection{Compiling a document using GitLab \CI}
 \setListingIcon{\GitLab}
 
-GitLab CI is not that different from the previous Actions setups.
-Actually, it is a bit easier to set up continuous integration here as some steps run automatically.
-For example, it is not necessary to checkout the repository, because this is already done by default.
+GitLab \CI\ is not too different from the previous Actions setup.
+It is even a bit easier to set up continuous integration here as some steps are run automatically.
+For example, it is not necessary to check out the repository, because this is done by default.
 
-The configuration file has to be placed within the repository's root directory and is named \file{.gitlab-ci.yml}.
+The configuration file has to be placed within the repository's root directory and given the name \file{.gitlab-ci.yml}. Here's our same example:
 
 \inputminted[breaklines,breakafter=/]{yaml}{examples/latex-basic-gitlab.yml}
 
-Here the steps only are a list of commands run after each other. Currently, the list only contains one \command{latexmk} call.
+Here the steps are simply a list of commands run after each other. Our list just contains one call to \command{latexmk}.
 
-In contrast to GitHub, GitLab is providing an API which allows creating static links to the artifacts.
-Thus, the file \file{README.md} of the demo repositories there include a link of the following structure:
+In contrast to GitHub, GitLab provides an \API\ which allows creating static links to the artifacts.
+Thus, the \file{README.md} of the demo repositories there include a link of the following structure:
 
 \begin{FlushLeft}
-\meta{Repository URL}\url{/-/jobs/artifacts/}\meta{branch}\allowbreak\url{/browse?job=}\meta{name of the job}
+\meta{repository url}\nolinkurl{/-/jobs/artifacts/}\meta{branch}\allowbreak\url{/browse?job=}\meta{name of job}
 \end{FlushLeft}
 
 This will list all artifacts attached to the job.
-Using the example config on one of the demo projects makes it:
+For instance, using the example configuration on one of the demo projects results in this sample url:
 
+% url is spacey, with unwanted and unneeded space around periods,
+% slashes, etc.  -kb
 \begin{FlushLeft}
-{\DeclareFieldFormat{citeurlpostfix}{\url{#1/-/jobs/artifacts/main/browse?job=run-LaTeX}}\citefield{workflow-document-gitlab}[citeurlpostfix]{url}}
+%{\tt https://gitlab.com/island}\\ % shows non-spacey url for comparison
+{\DeclareFieldFormat{citeurlpostfix}{\nolinkurl{#1/-/jobs/artifacts/main/browse?job=run-LaTeX}}\citefield{workflow-document-gitlab}[citeurlpostfix]{url}}
 \end{FlushLeft}
 
-\section{Testing with multiple versions or compilers}
+\section{Testing with multiple versions or~compilers}
 \setListingIcon{\GitHub}
 
-We promised one can extend these setups to test using multiple \TeX{} versions or engines.
-Different engines are actually straightforward to include by running additional steps with different commands.
-It is also possible to use those in separate actions or even workflow files.
-There is no general way to structure those as it always depends on whether to always run everything or save resources by conditional or sequential execution.
+We promised that one can extend these setups to test using multiple \TeX{} versions or engines.
+Different engines are straightforward to include by running additional steps with different commands.
+Alternatively, it is possible to use different engines in separate actions or even workflow files.
+There is no general way to structure those, as the choice always depends on whether to always run everything or save resources via conditional or sequential execution.
 
-To use different versions of \TeXLive{}, the Island of \TeX{} provides historic images of all but the latest \TeXLive release (which is not historic yet anyway).
+To use different versions of \TeXLive{}, the Island of \TeX{} provides historic images of all but the latest \TeXLive release (which is not yet historic).
 
 % This is https://github.com/islandoftex/tug2024-workflow-document-github/blob/main/.github/workflows/main.yaml#L56
 %  (only some lines simplified, but line numbers are OK!)
@@ -448,27 +452,27 @@ test-on-IoT-texlive:
   strategy:
     matrix:
       image: ["TL2022-historic", "TL2023-historic", "latest"]
-  name: "Test on ${{matrix.image}}"
+  name: "Test on ${{ matrix.image }}"
   container:
-    image: texlive/texlive:${{matrix.image}}
+    image: texlive/texlive:${{ matrix.image }}
   steps:
 \end{tugboatlisting}
 
 \begin{description}
 \item[strategy:] this is used to create a loop over elements.
-In this case, a variable called \mintinline{yaml}|matrix| containing a list of images is used and the content can be accessed within other parts of the file using \mintinline{yaml}|${{matrix.image}}|.
-Thus, the first run will use \TeXLive~2022, continue on 2023 and finally run on the latest release.
+In this case, a variable called \mintinline{yaml}|matrix| containing a list of images is used and the content can then be accessed within other parts of the file using \mintinline{yaml}|${{ matrix.image }}|.
+Thus, the first run will use \acro{TL} 2022, continue on 2023 and finally run on the latest release.
 A full list of the provided images can be found at \cite{islandoftex-docker-gitlab}.
 \end{description}
 
-Similarly, on GitLab there is also a matrix feature.
-The following example illustrates how to run multiple engines each on multiple \TeXLive releases:
+Similarly, GitLab also has a matrix feature.
+The following example illustrates how to run multiple engines, each on multiple \TeXLive releases:
 \setListingIcon{\GitLab}
 
 \begingroup
 \fvset{commandchars=\\\{\}}
 \let\savetheFancyVerbLine\theFancyVerbLine
-\def\codecomment{\hspace*{-2\mintednumbersep}\textnormal{[… contains script + artifacts … ]}}
+\def\codecomment{\hspace*{-2\mintednumbersep}\textnormal{[ …\ contains script + artifacts …\ ]}}
 % This is https://gitlab.com/islandoftex/texmf/tug2024-workflow-document-gitlab/-/blob/main/.gitlab-ci.yml?ref_type=heads
 % | Listing line | real line |
 % | 1, 2         | 1, 2  |
@@ -477,9 +481,7 @@ The following example illustrates how to run multiple engines each on multiple \
 \begin{tugboatlisting}[escapeinside=||,breaklines,breakafter=/]{yaml}
 check:
   image: registry.gitlab.com/islandoftex/images/texlive:$TEXLIVE_VERSION
-\gdef\theFancyVerbLine{}
-\codecomment
-\gdef\theFancyVerbLine{\addtocounter{FancyVerbLine}{2}}
+\gdef\theFancyVerbLine{}\codecomment\gdef\theFancyVerbLine{\addtocounter{FancyVerbLine}{2}}
   parallel:\global\let\theFancyVerbLine\savetheFancyVerbLine
     matrix:
       - TEXLIVE_VERSION: ['TL2022-historic', 'TL2023-historic', 'latest']
@@ -491,25 +493,25 @@ check:
 %\textcolor{red}{\small
 %8.\alph{FancyVerbLine}}}
 
-Here, the variable is more like a bash variable but can be used the same way.
+Here the variable is more like a shell variable but can be used the same way.
 
 
 \section{Minimize the build container}
 \label{sec:minimize}\setListingIcon{}
-The previous examples used a full \TeXLive installation to have the most convenient setup.\footnote{Almost: the images we used neither include the documentation nor the source tree of \TeXLive.}
+The previous examples used a full \TeXLive installation to have the most convenient setup.\footnote{Not exactly full: the images we used include neither the documentation nor the source trees of \TeXLive.}
 The IoT images even ship all dependencies of additional tools such as arara or minted, which enables that all tools in \TeXLive will work out of the box.
 
 Still, sometimes you will not need all the bells and whistles and there are advantages to smaller build containers.
-For instance, downloading more than one gigabyte can take quite some time long.
+For instance, downloading more than one gigabyte can take quite some time.
 Or you may only have limited disk space available on the runner server.
 
-Side remark: If you are not looking to reduce the images themselves but the compile time because you are building many documents, have a look at last year's IoT article~\cite{islandoftex-docker}.
+Side remark: If you are looking to reduce not the images themselves but the compile time because you are building many documents, have a look at last year's IoT article~\cite{islandoftex-docker}.
 
-Back to minimizing the build environment: the most annoying part here might be to find out which packages are actually needed to compile…
+Back to minimizing the build environment: the most annoying part here might be discovering which packages are actually needed to compile …
 
-So the Island of \TeX{} proudly presents: \DEPP – The DEPendency Printer for \TeXLive\cite{depp}.\footnote{If you are German, do not be surprised if this tool is more clever than its name suggests.}
+So the Island of \TeX{} proudly presents: \DEPP – The \acro{DEP}endency Printer for \TeXLive~\cite{depp}.\footnote{If you are German, do not be surprised if this tool is more clever than its name suggests.}
 
-As this article should focus on pipelines we won't go into detail on the tool itself but instead show how \DEPP produces a file listing all \TeXLive packages necessary for the build.
+As this article focuses on pipelines we won't go into detail on the tool itself but instead show how \DEPP produces a file listing all \TeXLive packages necessary for the build.
 For the example projects these look like:
 
 \begingroup
@@ -520,7 +522,7 @@ For the example projects these look like:
 %  b) pdftexcmds <-- This is https://gitlab.com/islandoftex/texmf/depp/-/issues/5
 %  c) scheme-minimal
 \begin{tugboatlisting}[breaklines,linenos=false,xleftmargin=0pt,escapeinside=||]{text}
-# Proudly generated by the Island of TeX's …
+# Proudly generated by the Island of TeX's…
 blindtext
 cm
 \textnormal{\ensuremath{\vdots}}
@@ -529,8 +531,8 @@ cm
 
 \subsection{GitHub}
 
-On GitHub there are multiple actions installing \TeXLive as a part of the workflow~\cite{marcel-latex-action,teatimeguest-latex-action}.
-Using those, it is possible to minimize the container and this will also reduce the build time.
+On GitHub there are multiple actions available to install \TeXLive as a part of the workflow~\cite{marcel-latex-action,teatimeguest-latex-action}.
+Using those, it is possible to minimize the container, which will also reduce the build time.
 
 \setListingIcon{\GitHub}
 % https://github.com/islandoftex/tug2024-workflow-document-github/pull/1 merged?
@@ -543,21 +545,22 @@ Using those, it is possible to minimize the container and this will also reduce 
       package_file: .github/tl_packages
 \end{tugboatlisting}
 
-This snippet can be used within \directive{steps:} and makes the \directive{container:} directive to be obsolete, so it should be removed.
-The \directive{package_file:} is the path to the \DEPP output or some manually created list of packages.
+This snippet can be used within \directive{steps:}\ and makes the \directive{container:}\ directive obsolete, so it should be removed.
+The \directive{package{\tt\char`_}file:}\ is the path to the \DEPP output or a manually created list of packages.
 
  \subsection{GitLab}
 
 On GitLab the simplified syntax makes running a minimized \TeXLive{} a bit more complex.
-The \DEPP repository\cite{depp} is luckily providing a shell script to install a \TeXLive based on the package file.
+The \DEPP repository~\cite{depp} luckily provides a shell script to install a \TeXLive based on the package file.
 This can be used in the pipelines to modify the container.
+
 Another option would be to provide a container image which already contains the necessary packages.
-If a self-hosted runner is used, this usually is the best option as caching can be configured to control when the container is rebuilt or updated.
+If a self-hosted runner is used, this is usually the best option as caching can be configured to control when the container is rebuilt or updated.
 
 \section{Pipelines for package developers}
 
 As promised, the advantages of using automated pipelines are even more significant when used within the development process of packages or templates.
-In this case, we expect the repository to contain a package and some kind of \command{l3build} configuration.\footnote{Of course, the setup itself also works for other tools, but that is out of scope for this article.}
+In this case, we expect the repository to contain a package and some kind of \command{l3build} configuration.\footnote{The setup itself also works for other tools, but that is out of scope for this article.}
 
 \subsection{GitHub}\setListingIcon{\GitHub}
 The \command{latex} step (calling \command{latexmk} in the examples) is replaced by
@@ -570,14 +573,14 @@ The \command{latex} step (calling \command{latexmk} in the examples) is replaced
 
 This will automatically run all test files according to the \command{l3build} setup.
 As this is within the context of running a package's test suite, the artifacts are totally different.
-We are not really interested in a \acro{PDF} but the test output.
-One of the authors created another action to take care of this~\cite{marcel-l3build-failure}:
+Now, we are not interested in a \acro{PDF} but rather the test output.
+One of the present authors has created another action to take care of this~\cite{marcel-l3build-failure}:
 
 % Streamlined version of https://github.com/islandoftex/tug2024-workflow-github/blob/main/.github/workflows/main.yaml#L47
 % (w/o build matrix, w/o comment for the retention days)
 \begin{tugboatlisting}[firstnumber=11]{yaml}
 - name: Archive failed test output
-  if: ${{always()}}
+  if: ${{ always() }}
   uses: zauguin/l3build-failure-artifacts@v1
   with:
     name: testfiles
@@ -585,89 +588,26 @@ One of the authors created another action to take care of this~\cite{marcel-l3bu
 \end{tugboatlisting}
 
 Apart from uploading the artifacts, this configuration illustrates another important point:
-In contrast to the \acro{PDF} of a document, where we are only interested in the success output, we are less interested in success than failure output for test suites.
-To let GitHub know that we actually are interested in these artifacts, \mintinline{yaml}|if: ${{always()}}| has been added.
-This will force the step to run also if the previous step failed.
-
-\subsection{GitLab}
-\setListingIcon{\GitLab}
-
-Again, GitLab directly supports the artifact upload without loading external extensions.
-
-% https://gitlab.com/islandoftex/texmf/tug2024-workflow-gitlab/-/blob/main/.gitlab-ci.yml?ref_type=heads#L4
-\begin{tugboatlisting}[firstnumber=4]{yaml}
-  - l3build check --show-log-on-error -q -H
-artifacts:
-  when: on_failure
-  paths:
-    - ./build/test/*.diff
-\end{tugboatlisting}
-
-This simplifies the standard setup but is less flexible.
-For example if you want to use different artifacts for success and failure, it is required to do that within two separate jobs within GitLab.
-
-
-\section{Running locally}
-\setListingIcon{}
-Within the tutorial at TUG2024, there was a short journey to running the pipelines locally.
-This might be helpful for debugging as one can control the steps manually or to ensure the local setup matches the one on the server.
-
-These setups usually use Docker.
-For the platforms which use actions there is a tool called \enquote{act} to simplify that process using the Docker API~\cite{act}.
-%Forgejo is extending this tool and using it for their runners\cite{forgejo-runner}.
-
-GitLab extends this by the option to simply have a GitLab runner installed locally.
-This provides the option of running
-
-\begin{tugboatlisting}[linenos=false,xleftmargin=0pt]{shell}
-gitlab-runner exec
-\end{tugboatlisting}
-
-\noindent within a local repository containing some Gitlab CI configuration.
-
-%It's possible to configure the pipelines to run directly on the machine instead of using docker containers.
-
-
-\section{This is Continuous Development}
-
-Of course, every configuration shown here is only an example and can be extended depending on the project's requirements.
-It is possible to run arbitrary commands, which might be necessary especially for complex setups.
-
-For example, when creating magazines, it is possible to continuously create a print and an online version, excerpts of single articles as well as HTML/EPUB output, while the editors only have to wait for the compilation of the article they actually are working on.
-
-The same goes for study material where we have rendered version including solutions and some without or documents which share lots of cross-references and therefore require a lot of runs.
-
-Integrating these structures into more advanced git usage like a useful branching concept can also help to improve collaboration or simplify the contribution process within OpenSource projects.
-It will reduce frustration for maintainers as some issues do not have to be checked manually.
-
-\section{Conclusion and Call for Action \& Feedback}
-We explained the use of GitHub, Forgejo, and GitLab for compiling \LaTeX{} documents and testing packages.
-We showed how different releases of \TeXLive{} and even different compilers can be used to simplify testing across platforms.
-Also we  took care of being able to access the PDF or the testing results.
-
-To increase the stability of all parts of \TeX{} development, we hope this will help to more tested packages and even less waste of time while compiling complex setups.
-In case you maintain some package it would be great if you could now setup some test to check it against the latest version of \TeXLive  or even the current development status.
-This can also be a preparation for next years \TeXLive{} pretest, as the Island of \TeX{} also is creating a Docker image for the pretests.
-In case you are planning to do that and face any issues, we will try to help.
-
-We would love to maintain this as a tutorial to simplify the use of automation for users of \TeX{} \& Friends.
-So if we left open questions, we would love to hear about it and will try to improve this tutorial as well as the examples.
-
-Contributions to this project are very welcome!
-
-
-
+In contrast to the \acro{PDF} of a document, where we are only interested in the successful output, for test suites we are less interested in success than the failure output.
+To let GitHub know that we are in fact interested in these artifacts, \mintinline{yaml}|if: ${{ always() }}| has been added.
+This will also force the step to run even if the previous step failed.
 
 \begin{table*}
 \caption{Template repositories published with this article. The naming scheme is structured as
-\meta{ci-type}\file{\_}\meta{task} adding \enquote{\file{\_minimal}} if the example is not using a pre-packaged Docker Image but includes methods to install packages based on a dependency file as described in Section~\ref{sec:minimize}. –
-All variants listed here have been prepared for at least the 3 platforms mentioned in the article.
-As the URLs quite long, we published the list including links within the paper's repository {\citefield{tug2024-cicd-tugboat-sources}[citeurl]{url}}.
+\meta{ci-type}\_\meta{task}, adding \enquote{\_minimal} if the example is not using a pre-packaged Docker image but includes methods to install packages based on a dependency file as described in section~\ref{sec:minimize}.
+\endgraf
+All variants listed here have been prepared for at least the three platforms mentioned here (GitHub, GitLab, ForgeJo).
+\endgraf
+As the urls are quite long, we published the list including links within the paper's repository {\citefield{tug2024-cicd-tugboat-sources}[citeurl]{url}}.
 }
 %(github-actions|gitlab-ci|forgejo-actions)-(compile-document|l3build)(-depp)?}
 \label{tab:demo-repos}
 
-\medskip
+\smallskip
+
+\let\origfaCheck=\faCheck
+\def\faCheck{\scriptsize \origfaCheck}
+\hbadness=10000
 
 \ExplSyntaxOn
 \cs_set:cpn {latex-Document} {\faCheck}
@@ -677,7 +617,7 @@ As the URLs quite long, we published the list including links within the paper's
 \cs_set:cpn {l3build-testing} {\faCheck}
 \begin{tabularx}{\linewidth}{@{}l*{5}{c}@{}}
 \toprule
-Name& Platforms & Document & l3build & Testing & IoT~Image\\
+Name& Platforms & Document & l3build & Testing & IoT~image\\
 \midrule
 %\clist_map_inline:nn {github-actions, gitlab-ci, forgejo-actions} {
 	\clist_map_inline:nn {latex, latex_testing, l3build} {
@@ -702,14 +642,88 @@ Name& Platforms & Document & l3build & Testing & IoT~Image\\
 \ExplSyntaxOff
 \end{table*}
 
+\subsection{GitLab}
+\setListingIcon{\GitLab}
+
+Again, GitLab directly supports the artifact upload without loading external extensions.
+
+% https://gitlab.com/islandoftex/texmf/tug2024-workflow-gitlab/-/blob/main/.gitlab-ci.yml?ref_type=heads#L4
+\begin{tugboatlisting}[firstnumber=4]{yaml}
+  - l3build check --show-log-on-error -q -H
+artifacts:
+  when: on_failure
+  paths:
+    - ./build/test/*.diff
+\end{tugboatlisting}
+
+This simplifies the standard setup but is less flexible.
+For example if you want to use different artifacts for success and failure, it is required to do that within two separate jobs within GitLab.
+
+
+\section{Running locally}
+\setListingIcon{}
+During the tutorial at the \tug'24\ conference there was a short demonstration of running the pipelines locally.
+This might be helpful for debugging as one can control the steps manually or to ensure the local setup matches the one on the server.
+
+These setups usually use Docker.
+For the platforms which use actions there is a tool called \enquote{act} to simplify that process using the Docker \API.
+%Forgejo is extending this tool and using it for their runners\cite{forgejo-runner}.
+
+GitLab extends this with the option to simply have a GitLab runner installed locally.
+This provides the option of running
+
+\begin{tugboatlisting}[linenos=false,xleftmargin=0pt]{shell}
+gitlab-runner exec
+\end{tugboatlisting}
+
+\noindent within a local repository containing some Gitlab \CI\ configuration.
+
+%It's possible to configure the pipelines to run directly on the machine instead of using docker containers.
+
+
+\section{This is Continuous Development}
+
+Of course every configuration shown here is only an example and can be extended depending on the project's requirements.
+It is possible to run arbitrary commands, which might be necessary especially for complex setups.
+
+For example, when creating magazines, it is possible to continuously create a print and an online version, excerpts of single articles as well as \acro{HTML/EPUB} output, while the editors only have to wait for the compilation of the article they are actively working on.
+
+The same goes for study material, where we can have rendered versions including solutions or not, or documents which share links between each other and therefore require many runs.
+
+Integrating these structures into more advanced git usage like a useful branching concept can also help improve collaboration or simplify the contribution process within open source projects.
+It will reduce frustration for maintainers as some issues do not have to be checked manually.
+
+\section{Conclusion and call for action \& feedback}
+We've explained the use of GitHub, Forgejo, and GitLab for compiling \LaTeX{} documents and packages.
+We showed how different releases of \TeXLive{} and even different compilers can be used to simplify testing across platforms.
+Also we  took care of being able to access the \PDF\ or the testing results in some way.
+To increase the stability of all parts of \TeX{} development we hope this will help with more testing of packages and even less waste of time while compiling complex setups.
+
+If you maintain any packages, it would be great if you could try setting up a test to check it against the latest release of \TeXLive  or even current \acro{TL} development.
+This can also be a preparation for next years \TeXLive{} pretest, as the Island of \TeX{} is creating a Docker image for the pretests.
+If you are planning or attempting to do that and face any issues, we will try to help.
+
+We would love to maintain this as a tutorial to simplify the use of automation for users of \TeX{} \& friends.
+So if we've left open questions, we would love to hear about it and will
+try to improve this tutorial as well as the examples.
+Table~\ref{tab:demo-repos} summarizes the related repositories.
+
+Contributions to this project are very welcome!
+
+
+
+
+
 
 
 %\printbibliography
 \def\url{\tbsurl}
-\SetBibJustification{\raggedright \advance\itemsep by 1pt plus1pt minus1pt }
+\SetBibJustification{\advance\itemsep by 1pt plus1pt minus1pt }
 %\bibliographystyle{tugboat}
 %\bibliography{tug2024-cicd}
+%\begin{flushleft}\loggingall
 \printbibliography
+%\end{flushleft}
 \makesignature
 
 
