@@ -548,10 +548,25 @@ This snippet can be used within \directive{steps:}\ and makes the \directive{con
 The \directive{package{\tt\char`_}file:}\ is the path to the \DEPP output or a manually created list of packages.
 
  \subsection{GitLab}
+ \setListingIcon{\GitLab}
 
 On GitLab the simplified syntax makes running a minimized \TeXLive{} a bit more complex.
 The \DEPP repository~\cite{depp} luckily provides a shell script to install a \TeXLive based on the package file.
 This can be used in the pipelines to modify the container.
+
+\begin{tugboatlisting}[firstnumber=5,autogobble,breaklines]{yaml}
+  image: registry.gitlab.com/islandoftex…
+  before_script:
+    - minimal_tl_setup.sh "tl_packages"
+\end{tugboatlisting}
+
+% actually in the examples i now have: but that's a bit weird if people are not familiar with sed i guess
+%\begin{tugboatlisting}[firstnumber=5,autogobble,breaklines]{yaml}
+%  image: registry.gitlab.com/islandoftex…
+%  before_script:
+%    - tlmgr install $(sed -e 's/[[:space:]]*#.*// ; /^[[:space:]]*$/d' "tl_packages")
+%    - tlmgr path add
+%\end{tugboatlisting}
 
 Another option would be to provide a container image which already contains the necessary packages.
 If a self-hosted runner is used, this is usually the best option as caching can be configured to control when the container is rebuilt or updated.
