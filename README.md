@@ -9,8 +9,11 @@
 ### Forgejo Actions
 
 * [LaTeX](https://codeberg.org/TeXhackse/forgejo-actions-latex)
+* [LaTeX minimal](https://codeberg.org/TeXhackse/forgejo-actions-latex_minimal)
 * [LaTeX testing](https://codeberg.org/TeXhackse/forgejo-actions-latex_testing)
+* [LaTeX testing minimal](https://codeberg.org/TeXhackse/forgejo-actions-latex_testing_minimal)
 * [l3build](https://codeberg.org/TeXhackse/forgejo-actions-l3build)
+* [l3build_minimal](https://codeberg.org/TeXhackse/forgejo-actions-l3build_minimal)
 
 ## Old repositories used in the workshop at TUG2024
 
