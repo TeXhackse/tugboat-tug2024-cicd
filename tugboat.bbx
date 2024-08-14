@@ -7,10 +7,8 @@
 \DeclareSourcemap{
   \maps[datatype=bibtex]{
     \map{
-      \step[fieldsource=urlnewline]
-      \step[fieldset=userf, origfieldval]
-      \step[fieldsource=newpage]
-      \step[fieldset=usere, origfieldval]
+      \step[fieldsource=urlnewline,fieldtarget=userf]
+      \step[fieldsource=newpage,fieldtarget=usere]
     }
   }
 }
@@ -137,7 +135,11 @@
 	  }%
 }
 
-\DeclareFieldFormat{url}{\ifvmode\else\allowbreak\fi\tbsurl{#1}}
+\DeclareFieldFormat{url}{%
+  % if urlnewline is set we can trigger a newline in here as requested by Karl
+  \iffieldundef{userf}{\ifvmode\else\allowbreak\fi}{\newline}%
+  \tbsurl{#1}%
+}
 \DeclareFieldFormat[article]{pages}{#1}
 
 %Don't show urldate
@@ -158,7 +160,6 @@
   \newunit\newblock
   \iftoggle{bbx:url}
     {%
-    \iffieldundef{userf}{}{\newline}% if urlnewline is set we can trigger a newline in here as requested by Karl
     \usebibmacro{url+urldate}}
     {}}
 
