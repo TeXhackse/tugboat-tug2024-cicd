@@ -4,6 +4,11 @@
 
 ### GitHub Actions
 
+* [LaTeX](https://github/islandoftex/github-actions-latex)
+* [LaTeX minimal](https://github/islandoftex/github-actions-latex_minimal)
+* [l3build](https://github/islandoftex/github-actions-l3build)
+* [l3build_minimal](hhttps://github/islandoftex/github-actions-l3build_minimal)
+
 ### GitLab CI
 
 ### Forgejo Actions
