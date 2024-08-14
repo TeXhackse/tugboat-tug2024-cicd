@@ -427,10 +427,8 @@ Thus, the \file{README.md} of the demo repositories there include a link of the 
 This will list all artifacts attached to the job.
 For instance, using the example configuration on one of the demo projects results in this sample url:
 
-% url is spacey, with unwanted and unneeded space around periods,
-% slashes, etc.  -kb
-\begin{FlushLeft}
-{\DeclareFieldFormat{citeurlpostfix}{\nolinkurl{#1/-/jobs/artifacts/main/browse?job=doc}}\citefield{workflow-gitlab}[citeurlpostfix]{url}}
+\begin{FlushLeft}\advance\rightskip by 0pt plus.3\hsize
+{\DeclareFieldFormat{citeurlpostfix}{\nolinkurl{#1/-/jobs/artifacts/main/browse?job=check: [latest, lualatex]}}\citefield{workflow-document-gitlab}[citeurlpostfix]{url}}
 \end{FlushLeft}
 
 \section{Testing with multiple versions or~compilers}
